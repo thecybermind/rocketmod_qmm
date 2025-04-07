@@ -7,7 +7,9 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "afxres.h"
+#include "WinResrc.h"
+#define IDC_STATIC -1
+
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -34,7 +36,9 @@ END
 
 2 TEXTINCLUDE DISCARDABLE
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#include ""WinResrc.h""\r\n"
+    "#define IDC_STATIC -1\r\n"
+
     "\0"
 END
 
@@ -53,7 +57,7 @@ END
 // Version
 //
 
-#include "../version.h"
+#include "../include/version.h"
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION ROCKETMOD_QMM_VERSION_DWORD
@@ -72,15 +76,14 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "\0"
+            VALUE "Comments", "Rocket Launchers Only!\0"
             VALUE "CompanyName", " \0"
-            VALUE "FileDescription", "rocketmod_qmm\0"
+            VALUE "FileDescription", "rocketmod_qmm " ROCKETMOD_QMM_OS " " ROCKETMOD_QMM_ARCH "\0"
             VALUE "FileVersion", ROCKETMOD_QMM_VERSION "\0"
             VALUE "InternalName", "rocketmod_qmm\0"
             VALUE "LegalCopyright", "Copyright 2004-?\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "rocketmod_qmm.dll\0"
-            VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "rocketmod_qmm\0"
             VALUE "ProductVersion", ROCKETMOD_QMM_VERSION "\0"
             VALUE "SpecialBuild", "\0"

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35728.132
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rocketmod_qmm", "rocketmod_qmm.vcxproj", "{1D5BE629-82D1-4511-8559-5116BFE4338C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug-Q3A|x86 = Debug-Q3A|x86
+		Release-Q3A|x86 = Release-Q3A|x86
+		Debug-Q3A|x64 = Debug-Q3A|x64
+		Release-Q3A|x64 = Release-Q3A|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-Q3A|x86.ActiveCfg = Debug-Q3A|Win32
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-Q3A|x86.Build.0 = Debug-Q3A|Win32
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-Q3A|x86.ActiveCfg = Release-Q3A|Win32
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-Q3A|x86.Build.0 = Release-Q3A|Win32
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-Q3A|x64.ActiveCfg = Debug-Q3A|x64
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-Q3A|x64.Build.0 = Debug-Q3A|x64
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-Q3A|x64.ActiveCfg = Release-Q3A|x64
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-Q3A|x64.Build.0 = Release-Q3A|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
