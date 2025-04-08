@@ -4,8 +4,6 @@
 # 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 # Created By: Kevin Masterson < cybermind@gmail.com >
 
-# STUB_QMM Makefile
-
 BIN_32 := rocketmod_qmm.so
 BIN_64 := rocketmod_qmm_x86_64.so
 GAMES := Q3A
