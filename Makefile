@@ -39,7 +39,6 @@ GAMES := Q3A
 .PHONY: all release debug release32 debug32 release64 debug64 $(addprefix game-,$(GAMES)) $(addprefix release-,$(GAMES)) $(addprefix debug-,$(GAMES))
 
 all: release debug
-game-%: release-% debug-%
 release: release32 release64
 release32: $(addprefix release32-,$(GAMES))
 release64: $(addprefix release64-,$(GAMES))
@@ -48,6 +47,7 @@ debug32: $(addprefix debug32-,$(GAMES))
 debug64: $(addprefix debug64-,$(GAMES))
 
 define link_rules
+game-$(1): release-$(1) debug-$(1)
 release-$(1): release32-$(1) release64-$(1)
 debug-$(1): debug32-$(1) debug64-$(1)
 release32-$(1): $(BIN_DIR)/release-$(1)/x86/qmm2.so
