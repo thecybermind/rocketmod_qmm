@@ -48,7 +48,7 @@ debug: debug32 debug64
 debug32: $(addprefix debug32-,$(GAMES))
 debug64: $(addprefix debug64-,$(GAMES))
 
-define link_rules
+define gen_rules
 game-$(1): release-$(1) debug-$(1)
 release-$(1): release32-$(1) release64-$(1)
 debug-$(1): debug32-$(1) debug64-$(1)
@@ -72,10 +72,7 @@ $(BIN_DIR)/debug-$(1)/x86/$(BIN_32): $$(addprefix $(OBJ_DIR)/debug-$(1)/x86/,$(O
 $(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64): $$(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES))
 	mkdir -p $$(@D)
 	$(CC) $(DBG_LDFLAGS_64) -o $$@ $(LDLIBS) $$^
-endef
-$(foreach game,$(GAMES),$(eval $(call link_rules,$(game))))
 
-define compile_rules
 $(OBJ_DIR)/release-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
 	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) $(REL_CFLAGS_32) -c $$< -o $$@
@@ -91,10 +88,13 @@ $(OBJ_DIR)/debug-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
 $(OBJ_DIR)/debug-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
 	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) $(DBG_CFLAGS_64) -c $$< -o $$@
+
+-include $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES:.o=.d))
+-include $$(addprefix $(OBJ_DIR)/release-$(1)/x86_64/,$(OBJ_FILES:.o=.d))
+-include $$(addprefix $(OBJ_DIR)/debug-$(1)/x86/,$(OBJ_FILES:.o=.d))
+-include $$(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES:.o=.d))
 endef
-$(foreach game,$(GAMES),$(eval $(call compile_rules,$(game))))
+$(foreach game,$(GAMES),$(eval $(call gen_rules,$(game))))
 
 clean:
 	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
-
--include $(OBJ_FILES:.o=.d)
