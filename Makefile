@@ -1,68 +1,98 @@
-#
-# RocketMod Makefile
-# Adapted from the Quake3 Makefile from http://tremulous.net/Q3A-source/
-#
+# RocketMod - Rocket Launchers-Only Plugin
+# Copyright 2004-2025
+# https://github.com/thecybermind/rocketmod_qmm/
+# 3-clause BSD license: https://opensource.org/license/bsd-3-clause
+# Created By: Kevin Masterson < cybermind@gmail.com >
 
-Q3A_FLAGS = -DGAME_Q3A -I../sdks/q3a/game -I../qmm1
+# STUB_QMM Makefile
 
-BINARY = rocketmod_qmm
-SRC_FILES = main.cpp
-HDR_FILES = version.h
+CC := g++
 
-CC=g++
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin
 
-BASE_CFLAGS=-pipe -m32
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
 
-BROOT=linux
-BR=$(BROOT)/release
-BD=$(BROOT)/debug
+OBJ_FILES := $(SRC_FILES:$(SRC_DIR)/%.cpp=%.o)
 
-B_Q3A=
+CPPFLAGS := -MMD -MP -I ./include -isystem ../qmm_sdks -isystem ../qmm2/include
+CFLAGS   := -Wall -pipe -fPIC
+LDFLAGS  := -shared -fPIC
+LDLIBS   :=
 
-OBJR_Q3A=$(SRC_FILES:%.cpp=$(BR)$(B_Q3A)/%.o)
-OBJD_Q3A=$(SRC_FILES:%.cpp=$(BD)$(B_Q3A)/%.o)
+REL_CPPFLAGS := $(CPPFLAGS)
+DBG_CPPFLAGS := $(CPPFLAGS) -D_DEBUG
 
-DEBUG_CFLAGS=$(BASE_CFLAGS) -g -pg
-RELEASE_CFLAGS=$(BASE_CFLAGS) -DNDEBUG -O2 -fomit-frame-pointer -pipe -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce 
+REL_CFLAGS_32 := $(CFLAGS) -m32 -O2 -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce 
+REL_CFLAGS_64 := $(CFLAGS) -O2 -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce 
+DBG_CFLAGS_32 := $(CFLAGS) -m32 -g -pg
+DBG_CFLAGS_64 := $(CFLAGS) -g -pg
 
-SHLIBCFLAGS=-fPIC
-SHLIBLDFLAGS=-shared -m32
+REL_LDFLAGS_32 := $(LDFLAGS) -m32
+REL_LDFLAGS_64 := $(LDFLAGS)
+DBG_LDFLAGS_32 := $(LDFLAGS) -m32 -g -pg
+DBG_LDFLAGS_64 := $(LDFLAGS) -g -pg
 
-help:
-	@echo RocketMod supports the following make rules:
-	@echo all - builds release versions for all supported games
-	@echo all_d - builds debug versions for all supported games
-	@echo q3a - builds release version for Quake 3 Arena
-	@echo q3a_d - builds debug version for Quake 3 Arena
-	@echo clean - cleans all output files and directories
+GAMES := Q3A
+
+.PHONY: all release debug release32 debug32 release64 debug64 $(addprefix game-,$(GAMES)) $(addprefix release-,$(GAMES)) $(addprefix debug-,$(GAMES))
+
+all: release debug
+game-%: release-% debug-%
+release: release32 release64
+release32: $(addprefix release32-,$(GAMES))
+release64: $(addprefix release64-,$(GAMES))
+debug: debug32 debug64
+debug32: $(addprefix debug32-,$(GAMES))
+debug64: $(addprefix debug64-,$(GAMES))
+
+define link_rules
+release-$(1): release32-$(1) release64-$(1)
+debug-$(1): debug32-$(1) debug64-$(1)
+release32-$(1): $(BIN_DIR)/release-$(1)/x86/qmm2.so
+release64-$(1): $(BIN_DIR)/release-$(1)/x86_64/qmm2_x86_64.so
+debug32-$(1): $(BIN_DIR)/debug-$(1)/x86/qmm2.so
+debug64-$(1): $(BIN_DIR)/debug-$(1)/x86_64/qmm2_x86_64.so
+
+$(BIN_DIR)/release-$(1)/x86/qmm2.so: $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES))
+	mkdir -p $$(@D)
+	$(CC) $(REL_LDFLAGS_32) -o $$@ $(LDLIBS) $$^
 	
-all: q3a
+$(BIN_DIR)/release-$(1)/x86_64/qmm2_x86_64.so: $$(addprefix $(OBJ_DIR)/release-$(1)/x86_64/,$(OBJ_FILES))
+	mkdir -p $$(@D)
+	$(CC) $(REL_LDFLAGS_64) -o $$@ $(LDLIBS) $$^
+	
+$(BIN_DIR)/debug-$(1)/x86/qmm2.so: $$(addprefix $(OBJ_DIR)/debug-$(1)/x86/,$(OBJ_FILES))
+	mkdir -p $$(@D)
+	$(CC) $(DBG_LDFLAGS_32) -o $$@ $(LDLIBS) $$^
+	
+$(BIN_DIR)/debug-$(1)/x86_64/qmm2_x86_64.so: $$(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES))
+	mkdir -p $$(@D)
+	$(CC) $(DBG_LDFLAGS_64) -o $$@ $(LDLIBS) $$^
+endef
+$(foreach game,$(GAMES),$(eval $(call link_rules,$(game))))
 
-all_d: q3a_d
+define compile_rules
+$(OBJ_DIR)/release-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $$(@D)
+	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) $(REL_CFLAGS_32) -c $$< -o $$@
 
-q3a: $(BR)/$(BINARY).so
-q3a_d: $(BD)/$(BINARY).so
+$(OBJ_DIR)/release-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $$(@D)
+	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) $(REL_CFLAGS_64) -c $$< -o $$@
 
-#quake 3 arena
-$(BR)$(B_Q3A)/$(BINARY).so: $(BR)$(B_Q3A) $(OBJR_Q3A)
-	$(CC) $(RELEASE_CFLAGS) $(SHLIBLDFLAGS) -o $@ $(OBJR_Q3A)
-  
-$(BD)$(B_Q3A)/$(BINARY).so: $(BD)$(B_Q3A) $(OBJD_Q3A)
-	$(CC) $(DEBUG_CFLAGS) $(SHLIBLDFLAGS) -o $@ $(OBJD_Q3A)
-  
-$(BR)$(B_Q3A)/%.o: %.cpp $(HDR_FILES)
-	$(CC) $(RELEASE_CFLAGS) $(Q3A_FLAGS) $(SHLIBCFLAGS) -o $@ -c $<
-  
-$(BD)$(B_Q3A)/%.o: %.cpp $(HDR_FILES)
-	$(CC) $(DEBUG_CFLAGS) $(Q3A_FLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+$(OBJ_DIR)/debug-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $$(@D)
+	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) $(DBG_CFLAGS_32) -c $$< -o $$@
 
-$(BR)$(B_Q3A):
-	@if [ ! -d $(BROOT) ];then mkdir $(BROOT);fi
-	@if [ ! -d $(@) ];then mkdir $@;fi
-
-$(BD)$(B_Q3A):
-	@if [ ! -d $(BROOT) ];then mkdir $(BROOT);fi
-	@if [ ! -d $(@) ];then mkdir $@;fi
+$(OBJ_DIR)/debug-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $$(@D)
+	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) $(DBG_CFLAGS_64) -c $$< -o $$@
+endef
+$(foreach game,$(GAMES),$(eval $(call compile_rules,$(game))))
 
 clean:
-	@rm -rf $(BD)$(B_Q3A) $(BR)$(B_Q3A)
+	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+
+-include $(OBJ_FILES:.o=.d)
