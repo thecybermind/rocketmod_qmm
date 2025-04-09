@@ -36,6 +36,7 @@ eng_syscall_t g_syscall = NULL;
 mod_vmMain_t g_vmMain = NULL;
 pluginfuncs_t* g_pluginfuncs = NULL;
 intptr_t g_vmbase = 0;
+pluginvars_t* g_pluginvars = NULL;
 
 gclient_t* g_clients = NULL;
 int g_clientsize = sizeof(gclient_t);
@@ -44,10 +45,8 @@ C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 	QMM_GIVE_PINFO();
 }
 
-C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, intptr_t vmbase, intptr_t reserved) {
+C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, intptr_t vmbase, pluginvars_t* pluginvars) {
 	QMM_SAVE_VARS();
-
-	reserved = 0;
 
 	return 1;
 }
@@ -60,7 +59,7 @@ int s_enabled = 0;
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	if (cmd == GAME_INIT) {
 		// init msg
-		g_syscall(G_PRINT, "[ROCKET] RocketMod v" ROCKETMOD_QMM_VERSION " by " ROCKETMOD_QMM_BUILDER " is loaded\n");
+		QMM_WRITEQMMLOG("RocketMod v" ROCKETMOD_QMM_VERSION " by " ROCKETMOD_QMM_BUILDER " is loaded\n", QMMLOG_INFO, "ROCKETMOD");
 
 		// register cvars
 		g_syscall(G_CVAR_REGISTER, NULL, "rocketmod_version", ROCKETMOD_QMM_VERSION, CVAR_ROM | CVAR_SERVERINFO);
@@ -130,19 +129,16 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 	static int is_classname = 0;
 	
-	switch (cmd) {
-		// this is called to get level-placed entity info at the start of the map
-		// moved to syscall_Post to not interfere with stripper_qmm
-		// also, don't do this if rocketmod_enabled is 0
-		case G_GET_ENTITY_TOKEN:
-			if (!s_enabled)
-				break;
-
+	// this is called to get level-placed entity info at the start of the map
+	// moved to syscall_Post to not interfere with stripper_qmm
+	// also, don't do this if rocketmod_enabled is 0
+	if (cmd == G_GET_ENTITY_TOKEN && s_enabled) {
 			// change spawn objects:
 			// weapon_* -> weapon_rocketlauncher
 			// ammo_* -> ammo_rockets
 
 			char* buf = (char*)args[0];
+			intptr_t buflen = args[1];
 
 			//if this is the value string for a "classname" key, check it
 			if (is_classname) {
@@ -150,16 +146,14 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 
 				//if its a weapon entity, make it a rocket launcher
 				if (!strncmp(buf, "weapon_", 7))
-					strncpy(buf, "weapon_rocketlauncher", args[1]);
+					strncpy(buf, "weapon_rocketlauncher", buflen);
 				//if its an ammo entity, make it a rocket ammo pack
 				else if (!strncmp(buf, "ammo_", 5))
-					strncpy(buf, "ammo_rockets", args[1]);
-
+					strncpy(buf, "ammo_rockets", buflen);
+			// if this token is "classname", then the next token is the actual class name
 			} else if (!strcmp(buf, "classname")) {
 				is_classname = 1;
 			}
-
-			break;
 	}
 
 	QMM_RET_IGNORED(1);
