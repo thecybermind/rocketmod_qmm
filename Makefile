@@ -52,24 +52,24 @@ define gen_rules
 game-$(1): release-$(1) debug-$(1)
 release-$(1): release32-$(1) release64-$(1)
 debug-$(1): debug32-$(1) debug64-$(1)
-release32-$(1): $(BIN_DIR)/release-$(1)/x86/$(BIN_32)
-release64-$(1): $(BIN_DIR)/release-$(1)/x86_64/$(BIN_64)
-debug32-$(1): $(BIN_DIR)/debug-$(1)/x86/$(BIN_32)
-debug64-$(1): $(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)
+release32-$(1): $(BIN_DIR)/release-$(1)/x86/$(BIN_32)_$(1)
+release64-$(1): $(BIN_DIR)/release-$(1)/x86_64/$(BIN_64)_$(1)
+debug32-$(1): $(BIN_DIR)/debug-$(1)/x86/$(BIN_32)_$(1)
+debug64-$(1): $(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)_$(1)
 
-$(BIN_DIR)/release-$(1)/x86/$(BIN_32): $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES))
+$(BIN_DIR)/release-$(1)/x86/$(BIN_32)_$(1): $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES))
 	mkdir -p $$(@D)
 	$(CC) $(REL_LDFLAGS_32) -o $$@ $(LDLIBS) $$^
 	
-$(BIN_DIR)/release-$(1)/x86_64/$(BIN_64): $$(addprefix $(OBJ_DIR)/release-$(1)/x86_64/,$(OBJ_FILES))
+$(BIN_DIR)/release-$(1)/x86_64/$(BIN_64)_$(1): $$(addprefix $(OBJ_DIR)/release-$(1)/x86_64/,$(OBJ_FILES))
 	mkdir -p $$(@D)
 	$(CC) $(REL_LDFLAGS_64) -o $$@ $(LDLIBS) $$^
 	
-$(BIN_DIR)/debug-$(1)/x86/$(BIN_32): $$(addprefix $(OBJ_DIR)/debug-$(1)/x86/,$(OBJ_FILES))
+$(BIN_DIR)/debug-$(1)/x86/$(BIN_32)_$(1): $$(addprefix $(OBJ_DIR)/debug-$(1)/x86/,$(OBJ_FILES))
 	mkdir -p $$(@D)
 	$(CC) $(DBG_LDFLAGS_32) -o $$@ $(LDLIBS) $$^
 	
-$(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64): $$(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES))
+$(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)_$(1): $$(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES))
 	mkdir -p $$(@D)
 	$(CC) $(DBG_LDFLAGS_64) -o $$@ $(LDLIBS) $$^
 
