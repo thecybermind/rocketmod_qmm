@@ -15,6 +15,8 @@ Created By:
 #if defined(GAME_Q3A)
 #include <q3a/game/q_shared.h>
 #include <q3a/game/g_local.h>
+#else
+#error Only supported in Quake 3!
 #endif
 
 #endif // __ROCKETMOD_QMM_GAME_H__
