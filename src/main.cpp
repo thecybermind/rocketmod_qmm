@@ -21,16 +21,13 @@ Created By:
 
 pluginres_t* g_result = NULL;
 plugininfo_t g_plugininfo = {
+	QMM_PIFV_MAJOR,				// plugin interface version major
+	QMM_PIFV_MINOR,				// plugin interface version minor
 	"RocketMod",				// name of plugin
 	ROCKETMOD_QMM_VERSION,		// version of plugin
 	"Rockets everywhere!",		// description of plugin
 	ROCKETMOD_QMM_BUILDER,		// author of plugin
 	"http://www.q3mm.org/",		// website of plugin
-	0,							// reserved
-	0,							// reserved
-	0,							// reserved
-	QMM_PIFV_MAJOR,				// plugin interface version major
-	QMM_PIFV_MINOR				// plugin interface version minor
 };
 eng_syscall_t g_syscall = NULL;
 mod_vmMain_t g_vmMain = NULL;
@@ -45,14 +42,19 @@ C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 	QMM_GIVE_PINFO();
 }
 
-C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, intptr_t vmbase, pluginvars_t* pluginvars) {
+C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
 	QMM_SAVE_VARS();
+
+	// check game engine and cancel load
+	if (strcmp(QMM_GETGAMEENGINE(), "Q3A") != 0) {
+		QMM_WRITEQMMLOG("RocketMod is only designed to be run in Quake 3!\n", QMMLOG_INFO, "ROCKETMOD");
+		return 0;
+	}
 
 	return 1;
 }
 
-C_DLLEXPORT void QMM_Detach(intptr_t reserved) {
-	reserved = 0;
+C_DLLEXPORT void QMM_Detach() {
 }
 
 int s_enabled = 0;
