@@ -1,0 +1,67 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: ./.github/build/linux/init.sh
+      - name: Build for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: ./.github/build/linux/release.sh
+      - name: Package Linux binaries
+        if: matrix.os == 'ubuntu-latest'
+        run: ./.github/build/linux/package.sh
+
+      - name: Setup MSBuild path
+        if: matrix.os == 'windows-latest'
+        uses: microsoft/setup-msbuild@v2
+      - name: Install Windows dependencies
+        if: matrix.os == 'windows-latest'
+        run: .\.github\build\windows\init.bat
+      - name: Build for Windows
+        if: matrix.os == 'windows-latest'
+        shell: cmd
+        run: .\.github\build\windows\release.bat
+      - name: Package Windows binaries
+        if: matrix.os == 'windows-latest'
+        run: .\.github\build\windows\package.bat
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: stub_qmm-${{ matrix.os }}
+          path: package/*
+          retention-days: 1
+          if-no-files-found: error
+  
+  tagged-release:
+    name: "Release"
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      # We don't need the repo, grab all artifacts from the build stage
+      # The plugin puts each artifact in a folder of `artifactname`
+      - uses: actions/download-artifact@v4
+      - name: Show fetched artifacts
+        run: ls -R
+      - name: Create a Github Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            stub_qmm-ubuntu-latest/*
+            stub_qmm-windows-latest/*

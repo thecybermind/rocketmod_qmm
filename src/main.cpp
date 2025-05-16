@@ -21,13 +21,13 @@ Created By:
 
 pluginres_t* g_result = NULL;
 plugininfo_t g_plugininfo = {
-	QMM_PIFV_MAJOR,				// plugin interface version major
-	QMM_PIFV_MINOR,				// plugin interface version minor
-	"RocketMod",				// name of plugin
-	ROCKETMOD_QMM_VERSION,		// version of plugin
-	"Rockets everywhere!",		// description of plugin
-	ROCKETMOD_QMM_BUILDER,		// author of plugin
-	"http://www.q3mm.org/",		// website of plugin
+	QMM_PIFV_MAJOR,									 // plugin interface version major
+	QMM_PIFV_MINOR,									 // plugin interface version minor
+	"RocketMod",									 // name of plugin
+	ROCKETMOD_QMM_VERSION,							 // version of plugin
+	"Rockets everywhere!",							 // description of plugin
+	ROCKETMOD_QMM_BUILDER,							 // author of plugin
+	"https://github.com/thecybermind/rocketmod_qmm", // website of plugin
 };
 eng_syscall_t g_syscall = NULL;
 mod_vmMain_t g_vmMain = NULL;
