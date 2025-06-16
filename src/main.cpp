@@ -57,7 +57,7 @@ C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginre
 C_DLLEXPORT void QMM_Detach() {
 }
 
-int s_enabled = 0;
+bool s_enabled = false;
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	if (cmd == GAME_INIT) {
 		// init msg
@@ -72,7 +72,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 
 		// cache this in an int so we don't have to check it every time
 		// G_GET_ENTITY_TOKEN comes around. player spawning still checks the cvar
-		s_enabled = QMM_GETINTCVAR("rocketmod_enabled");
+		s_enabled = (bool)QMM_GETINTCVAR("rocketmod_enabled");
 	}
 	QMM_RET_IGNORED(1);
 }
@@ -129,7 +129,7 @@ C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 }
 
 C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
-	static int is_classname = 0;
+	static bool is_classname = false;
 	
 	// this is called to get level-placed entity info at the start of the map
 	// moved to syscall_Post to not interfere with stripper_qmm
@@ -144,7 +144,7 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 
 			//if this is the value string for a "classname" key, check it
 			if (is_classname) {
-				is_classname = 0;
+				is_classname = false;
 
 				//if its a weapon entity, make it a rocket launcher
 				if (!strncmp(buf, "weapon_", 7))
@@ -154,7 +154,7 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 					strncpy(buf, "ammo_rockets", buflen);
 			// if this token is "classname", then the next token is the actual class name
 			} else if (!strcmp(buf, "classname")) {
-				is_classname = 1;
+				is_classname = true;
 			}
 	}
 
