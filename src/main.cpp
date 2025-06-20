@@ -19,7 +19,7 @@ Created By:
 #include <stdio.h>
 #include <string.h>
 
-pluginres_t* g_result = NULL;
+pluginres_t* g_result = nullptr;
 plugininfo_t g_plugininfo = {
 	QMM_PIFV_MAJOR,									 // plugin interface version major
 	QMM_PIFV_MINOR,									 // plugin interface version minor
@@ -29,14 +29,14 @@ plugininfo_t g_plugininfo = {
 	ROCKETMOD_QMM_BUILDER,							 // author of plugin
 	"https://github.com/thecybermind/rocketmod_qmm", // website of plugin
 };
-eng_syscall_t g_syscall = NULL;
-mod_vmMain_t g_vmMain = NULL;
-pluginfuncs_t* g_pluginfuncs = NULL;
+eng_syscall_t g_syscall = nullptr;
+mod_vmMain_t g_vmMain = nullptr;
+pluginfuncs_t* g_pluginfuncs = nullptr;
 intptr_t g_vmbase = 0;
-pluginvars_t* g_pluginvars = NULL;
+pluginvars_t* g_pluginvars = nullptr;
 
-gclient_t* g_clients = NULL;
-int g_clientsize = sizeof(gclient_t);
+gclient_t* g_clients = nullptr;
+intptr_t g_clientsize = sizeof(gclient_t);
 
 C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 	QMM_GIVE_PINFO();
@@ -64,11 +64,11 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		QMM_WRITEQMMLOG("RocketMod v" ROCKETMOD_QMM_VERSION " by " ROCKETMOD_QMM_BUILDER " is loaded\n", QMMLOG_INFO, "ROCKETMOD");
 
 		// register cvars
-		g_syscall(G_CVAR_REGISTER, NULL, "rocketmod_version", ROCKETMOD_QMM_VERSION, CVAR_ROM | CVAR_SERVERINFO);
+		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_version", ROCKETMOD_QMM_VERSION, CVAR_ROM | CVAR_SERVERINFO);
 		g_syscall(G_CVAR_SET, "rocketmod_version", ROCKETMOD_QMM_VERSION);
-		g_syscall(G_CVAR_REGISTER, NULL, "rocketmod_enabled", "1", CVAR_SERVERINFO | CVAR_ARCHIVE);
-		g_syscall(G_CVAR_REGISTER, NULL, "rocketmod_gauntlet", "1", CVAR_ARCHIVE);
-		g_syscall(G_CVAR_REGISTER, NULL, "rocketmod_ammo", "10", CVAR_ARCHIVE);
+		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_enabled", "1", CVAR_SERVERINFO | CVAR_ARCHIVE);
+		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_gauntlet", "1", CVAR_ARCHIVE);
+		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_ammo", "10", CVAR_ARCHIVE);
 
 		// cache this in an int so we don't have to check it every time
 		// G_GET_ENTITY_TOKEN comes around. player spawning still checks the cvar
