@@ -147,11 +147,15 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 				is_classname = false;
 
 				//if its a weapon entity, make it a rocket launcher
-				if (!strncmp(buf, "weapon_", 7))
+				if (!strncmp(buf, "weapon_", 7)) {
 					strncpy(buf, "weapon_rocketlauncher", buflen);
+					buf[buflen - 1] = '\0';
+				}
 				//if its an ammo entity, make it a rocket ammo pack
-				else if (!strncmp(buf, "ammo_", 5))
+				else if (!strncmp(buf, "ammo_", 5)) {
 					strncpy(buf, "ammo_rockets", buflen);
+					buf[buflen - 1] = '\0';
+				}
 			// if this token is "classname", then the next token is the actual class name
 			} else if (!strcmp(buf, "classname")) {
 				is_classname = true;
