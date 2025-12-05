@@ -38,6 +38,15 @@ pluginvars_t* g_pluginvars = nullptr;
 gclient_t* g_clients = nullptr;
 intptr_t g_clientsize = sizeof(gclient_t);
 
+
+// "safe" strncpy that always null-terminates
+char* strncpyz(char* dest, const char* src, size_t count) {
+	char* ret = strncpy(dest, src, count);
+	dest[count - 1] = '\0';
+	return ret;
+}
+
+
 C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 	QMM_GIVE_PINFO();
 }
@@ -148,13 +157,11 @@ C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 
 				//if its a weapon entity, make it a rocket launcher
 				if (!strncmp(buf, "weapon_", 7)) {
-					strncpy(buf, "weapon_rocketlauncher", buflen);
-					buf[buflen - 1] = '\0';
+					strncpyz(buf, "weapon_rocketlauncher", buflen);
 				}
 				//if its an ammo entity, make it a rocket ammo pack
 				else if (!strncmp(buf, "ammo_", 5)) {
-					strncpy(buf, "ammo_rockets", buflen);
-					buf[buflen - 1] = '\0';
+					strncpyz(buf, "ammo_rockets", buflen);
 				}
 			// if this token is "classname", then the next token is the actual class name
 			} else if (!strcmp(buf, "classname")) {
