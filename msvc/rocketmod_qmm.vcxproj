@@ -5,13 +5,13 @@
       <Configuration>Debug-Q3A</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-Q3A|Win32">
-      <Configuration>Release-Q3A</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-Q3A|x64">
       <Configuration>Debug-Q3A</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Q3A|Win32">
+      <Configuration>Release-Q3A</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Q3A|x64">
       <Configuration>Release-Q3A</Configuration>
