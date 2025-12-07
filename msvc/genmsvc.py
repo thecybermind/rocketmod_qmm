@@ -2,7 +2,7 @@
 # Copyright 2004-2025
 # https://github.com/thecybermind/stub_qmm/
 # 3-clause BSD license: https://opensource.org/license/bsd-3-clause
-# 
+#
 # Created By:
 #     Kevin Masterson < cybermind@gmail.com >
 
@@ -290,9 +290,9 @@ def main():
     # find existing files in vcxproj
     sourcefiles, headerfiles = find_files(name)
     if not sourcefiles:
-      sourcefiles = ["..\\src\\main.cpp"]
+        sourcefiles = ["..\\src\\main.cpp"]
     if not headerfiles:
-      headerfiles = ["..\\include\\game.h", "..\\include\\version.h"]
+        headerfiles = ["..\\include\\game.h", "..\\include\\version.h"]
 
     gen_sln(name)
 
