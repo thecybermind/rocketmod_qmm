@@ -10,8 +10,26 @@ import os
 import re
 import sys
 
+from datetime import datetime
+
 games = [
+    "JAMP",
+    "JASP",
+    "JK2MP",
+    "JK2SP",
+    "MOHAA",
+    "MOHBT",
+    "MOHSH",
+    "Q2R",
     "Q3A",
+    "QUAKE2",
+    "RTCWMP",
+    "RTCWSP",
+    "SOF2MP",
+    "STEF2",
+    "STVOYHM",
+    "STVOYSP",
+    "WET",
 ]
 
 builds = [
@@ -261,6 +279,128 @@ def gen_vcxproj_filters(name, sourcefiles, headerfiles):
         )
 
 
+def gen_resource(name):
+    uname = name.upper()
+    with open(f"resource.rc", "w", encoding="utf-8") as f:
+        f.write(f"""//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "WinResrc.h"
+#define IDC_STATIC -1
+
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE
+BEGIN
+    "resource.h\\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE
+BEGIN
+    "#include ""WinResrc.h""\\r\\n"
+    "#define IDC_STATIC -1\\r\\n"
+
+    "\\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE
+BEGIN
+    "\\r\\n"
+    "\\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+#define MSVC_RC
+#include "../include/version.h"
+#undef MSVC_RC
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION {uname}_VERSION_DWORD
+ PRODUCTVERSION {uname}_VERSION_DWORD
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "{name} QMM plugin\\0"
+            VALUE "CompanyName", " \\0"
+            VALUE "FileDescription", "{name} " {uname}_OS " " {uname}_ARCH "\\0"
+            VALUE "FileVersion", {uname}_VERSION "\\0"
+            VALUE "InternalName", "{name}\\0"
+            VALUE "LegalCopyright", "Copyright {datetime.now().year}\\0"
+            VALUE "LegalTrademarks", "\\0"
+            VALUE "OriginalFilename", "{name}.dll\\0"
+            VALUE "ProductName", "{name}\\0"
+            VALUE "ProductVersion", {uname}_VERSION "\\0"
+            VALUE "SpecialBuild", "\\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
+""")
+
+    
 def find_files(name):
     sourcefiles = []
     headerfiles = []
@@ -298,6 +438,8 @@ def main():
 
     gen_vcxproj(name, sourcefiles, headerfiles)
     gen_vcxproj_filters(name, sourcefiles, headerfiles)
+    
+    gen_resource(name)
 
 
 if __name__ == "__main__":
