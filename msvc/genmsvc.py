@@ -13,23 +13,7 @@ import sys
 from datetime import datetime
 
 games = [
-    "JAMP",
-    "JASP",
-    "JK2MP",
-    "JK2SP",
-    "MOHAA",
-    "MOHBT",
-    "MOHSH",
-    "Q2R",
     "Q3A",
-    "QUAKE2",
-    "RTCWMP",
-    "RTCWSP",
-    "SOF2MP",
-    "STEF2",
-    "STVOYHM",
-    "STVOYSP",
-    "WET",
 ]
 
 builds = [
@@ -190,7 +174,7 @@ def gen_vcxproj(name, sourcefiles, headerfiles):
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableUAC>false</EnableUAC>
-	</Link>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Debug-'))==true">
     <ClCompile>
@@ -271,7 +255,7 @@ def gen_vcxproj_filters(name, sourcefiles, headerfiles):
         f.write(
             f"""  </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="{name}.rc">
+    <ResourceCompile Include="resource.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
