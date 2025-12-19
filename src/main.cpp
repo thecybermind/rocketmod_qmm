@@ -21,13 +21,14 @@ Created By:
 
 pluginres_t* g_result = nullptr;
 plugininfo_t g_plugininfo = {
-	QMM_PIFV_MAJOR,									 // plugin interface version major
-	QMM_PIFV_MINOR,									 // plugin interface version minor
-	"RocketMod",									 // name of plugin
-	ROCKETMOD_QMM_VERSION,							 // version of plugin
-	"Rockets everywhere!",							 // description of plugin
-	ROCKETMOD_QMM_BUILDER,							 // author of plugin
-	"https://github.com/thecybermind/rocketmod_qmm", // website of plugin
+	QMM_PIFV_MAJOR,										// plugin interface version major
+	QMM_PIFV_MINOR,										// plugin interface version minor
+	"RocketMod",										// name of plugin
+	ROCKETMOD_QMM_VERSION,								// version of plugin
+	"Rockets everywhere!",								// description of plugin
+	ROCKETMOD_QMM_BUILDER,								// author of plugin
+	"https://github.com/thecybermind/rocketmod_qmm",	// website of plugin
+	"ROCKET",											// log tag
 };
 eng_syscall_t g_syscall = nullptr;
 mod_vmMain_t g_vmMain = nullptr;
@@ -55,8 +56,8 @@ C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginre
 	QMM_SAVE_VARS();
 
 	// check game engine and cancel load
-	if (strcmp(QMM_GETGAMEENGINE(), "Q3A") != 0) {
-		QMM_WRITEQMMLOG("RocketMod is only designed to be run in Quake 3!\n", QMMLOG_INFO, "ROCKETMOD");
+	if (strcmp(QMM_GETGAMEENGINE(PLID), "Q3A") != 0) {
+		QMM_WRITEQMMLOG(PLID, "RocketMod is only designed to be run in Quake 3!\n", QMMLOG_INFO);
 		return 0;
 	}
 
@@ -70,7 +71,7 @@ bool s_enabled = false;
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	if (cmd == GAME_INIT) {
 		// init msg
-		QMM_WRITEQMMLOG("RocketMod v" ROCKETMOD_QMM_VERSION " by " ROCKETMOD_QMM_BUILDER " is loaded\n", QMMLOG_INFO, "ROCKETMOD");
+		QMM_WRITEQMMLOG(PLID, "RocketMod v" ROCKETMOD_QMM_VERSION " by " ROCKETMOD_QMM_BUILDER " is loaded\n", QMMLOG_INFO);
 
 		// register cvars
 		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_version", ROCKETMOD_QMM_VERSION, CVAR_ROM | CVAR_SERVERINFO);
@@ -81,7 +82,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 
 		// cache this in an int so we don't have to check it every time
 		// G_GET_ENTITY_TOKEN comes around. player spawning still checks the cvar
-		s_enabled = (bool)QMM_GETINTCVAR("rocketmod_enabled");
+		s_enabled = (bool)QMM_GETINTCVAR(PLID, "rocketmod_enabled");
 	}
 	QMM_RET_IGNORED(1);
 }
@@ -99,7 +100,7 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 		// see this is called after the starting machine gun is set
 		// also, don't do this if rocketmod_enabled is 0
 		case G_GET_USERCMD:
-			if (!QMM_GETINTCVAR("rocketmod_enabled"))
+			if (!QMM_GETINTCVAR(PLID, "rocketmod_enabled"))
 				break;
 
 			gclient_t* client = CLIENT_FROM_NUM(args[0]);
@@ -111,11 +112,11 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 				// give user rocket launcher and gauntlet only
 				client->ps.stats[STAT_WEAPONS] = 1 << WP_ROCKET_LAUNCHER;
 
-				if (QMM_GETINTCVAR("rocketmod_gauntlet"))
+				if (QMM_GETINTCVAR(PLID, "rocketmod_gauntlet"))
 					client->ps.stats[STAT_WEAPONS] |= 1 << WP_GAUNTLET;
 
 				// give rockets and clear machinegun ammo
-				client->ps.ammo[WP_ROCKET_LAUNCHER] = QMM_GETINTCVAR("rocketmod_ammo");
+				client->ps.ammo[WP_ROCKET_LAUNCHER] = QMM_GETINTCVAR(PLID, "rocketmod_ammo");
 				if (client->ps.ammo[WP_ROCKET_LAUNCHER] <= 0)
 					client->ps.ammo[WP_ROCKET_LAUNCHER] = 10;
 				client->ps.ammo[WP_MACHINEGUN] = 0;
