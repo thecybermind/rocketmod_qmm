@@ -8,8 +8,6 @@ BIN_32 := rocketmod_qmm
 BIN_64 := rocketmod_qmm_x86_64
 GAMES := Q3A
 
-
-
 CC := g++
 
 SRC_DIR := src
@@ -28,8 +26,8 @@ LDLIBS   :=
 REL_CPPFLAGS := $(CPPFLAGS)
 DBG_CPPFLAGS := $(CPPFLAGS) -D_DEBUG
 
-REL_CFLAGS_32 := $(CFLAGS) -m32 -O2 -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce
-REL_CFLAGS_64 := $(CFLAGS) -O2 -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce
+REL_CFLAGS_32 := $(CFLAGS) -m32 -O2 -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce 
+REL_CFLAGS_64 := $(CFLAGS) -O2 -ffast-math -falign-loops=2 -falign-jumps=2 -falign-functions=2 -fno-strict-aliasing -fstrength-reduce 
 DBG_CFLAGS_32 := $(CFLAGS) -m32 -g -pg
 DBG_CFLAGS_64 := $(CFLAGS) -g -pg
 
@@ -72,7 +70,7 @@ debug-$(1): debug32-$(1) debug64-$(1)
 release32-$(1): $(BIN_DIR)/release-$(1)/x86/$(BIN_32)_$(1).so
 release64-$(1): $(BIN_DIR)/release-$(1)/x86_64/$(BIN_64)_$(1).so
 debug32-$(1): $(BIN_DIR)/debug-$(1)/x86/$(BIN_32)_$(1).so
-debug64-$(1): $(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)_$(1).so.so
+debug64-$(1): $(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)_$(1).so
 
 $(BIN_DIR)/release-$(1)/x86/$(BIN_32)_$(1).so: $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES))
 	mkdir -p $$(@D)

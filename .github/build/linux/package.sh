@@ -5,9 +5,9 @@ rm -f *
 cp ../README.md ./
 cp ../LICENSE ./
 
-for x in Q3A; do
-  cp ../bin/release-$x/x86/rocketmod_qmm_$x.so ./
-  cp ../bin/release-$x/x86_64/rocketmod_qmm_x86_64_$x.so ./
-done 
+for f in Q3A; do
+  cp ../bin/release-$f/x86/rocketmod_qmm_$f.so ./
+  cp ../bin/release-$f/x86_64/rocketmod_qmm_x86_64_$f.so ./
+done
 
 cd ..
