@@ -42,7 +42,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: rocketmod_qmm-${{ matrix.os }}
+          name: qmmplugin-${{ matrix.os }}
           path: package/*
           retention-days: 1
           if-no-files-found: error
@@ -63,5 +63,5 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            rocketmod_qmm-ubuntu-latest/*
-            rocketmod_qmm-windows-latest/*
+            qmmplugin-ubuntu-latest/*
+            qmmplugin-windows-latest/*
