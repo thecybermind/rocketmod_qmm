@@ -44,10 +44,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\game.h" />
+    <ClInclude Include="..\include\main.h" />
+    <ClInclude Include="..\include\util.h" />
     <ClInclude Include="..\include\version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\game_q2r.cpp" />
+    <ClCompile Include="..\src\game_q3a.cpp" />
+    <ClCompile Include="..\src\game_quake2.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">

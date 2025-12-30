@@ -25,4 +25,9 @@ Created By:
     #error Only supported in Quake 2 and Quake 3!
 #endif
 
+intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args);
+intptr_t GAME_syscall(intptr_t cmd, intptr_t* args);
+intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args);
+intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args);
+
 #endif // __ROCKETMOD_QMM_GAME_H__
