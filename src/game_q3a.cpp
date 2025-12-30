@@ -16,6 +16,7 @@ Created By:
 #include "version.h"
 #include "game.h"
 
+#include "util.h"
 #include "main.h"
 
 
