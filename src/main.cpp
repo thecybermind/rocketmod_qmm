@@ -52,20 +52,35 @@ C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
 	QMM_GIVE_PINFO();
 }
 
+
+struct engine_mod {
+	const char* engine;
+	const char* mod;
+} allowed_games[] = {
+	{ "Q3A", "baseq3" },
+	{ "Q2R", "baseq2" },
+	{ "QUAKE2", "baseq2" },
+};
 C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
 	QMM_SAVE_VARS();
 
-	// check game engine and cancel load
-	if (strcmp(QMM_GETGAMEENGINE(PLID), "Q3A") != 0) {
-		QMM_WRITEQMMLOG(PLID, "RocketMod is only designed to be run in Quake 3!\n", QMMLOG_INFO);
-		return 0;
+	// check game engine and mod
+	bool load = false;
+	const char* engine = QMM_GETGAMEENGINE(PLID);
+	const char* mod = QMM_GETSTRCVAR(PLID, "fs_game");
+	for (int i = 0; i < sizeof(allowed_games) / sizeof(allowed_games[0]); i++) {
+		if (!strcmp(engine, allowed_games[i].engine) && !strcmp(engine, allowed_games[i].engine)) {
+			load = true;
+			break;
+		}
 	}
-
-	return 1;
+	return load;
 }
+
 
 C_DLLEXPORT void QMM_Detach() {
 }
+
 
 bool s_enabled = false;
 C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
@@ -86,6 +101,7 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 	}
 	QMM_RET_IGNORED(1);
 }
+
 
 C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 	switch (cmd) {
@@ -134,9 +150,11 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(1);
 }
 
+
 C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
 	QMM_RET_IGNORED(1);
 }
+
 
 C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
 	static bool is_classname = false;
