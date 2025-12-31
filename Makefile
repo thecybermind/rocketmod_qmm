@@ -1,12 +1,12 @@
-# RocketMod - Rocket Launchers-Only Plugin
+# STUB_QMM - Example QMM Plugin
 # Copyright 2004-2025
-# https://github.com/thecybermind/rocketmod_qmm/
+# https://github.com/thecybermind/stub_qmm/
 # 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 # Created By: Kevin Masterson < k.m.masterson@gmail.com >
 
 BIN_32 := rocketmod_qmm
 BIN_64 := rocketmod_qmm_x86_64
-GAMES := Q3A
+GAMES := Q3A QUAKE2
 
 CC := g++
 

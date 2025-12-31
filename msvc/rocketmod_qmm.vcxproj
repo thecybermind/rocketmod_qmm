@@ -5,25 +5,55 @@
       <Configuration>Debug-Q3A</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-QUAKE2|Win32">
+      <Configuration>Debug-QUAKE2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Q2R|x64">
+      <Configuration>Debug-Q2R</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-Q3A|x64">
       <Configuration>Debug-Q3A</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-QUAKE2|x64">
+      <Configuration>Debug-QUAKE2</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Q3A|Win32">
       <Configuration>Release-Q3A</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-QUAKE2|Win32">
+      <Configuration>Release-QUAKE2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-Q2R|x64">
+      <Configuration>Release-Q2R</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Q3A|x64">
       <Configuration>Release-Q3A</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-QUAKE2|x64">
+      <Configuration>Release-QUAKE2</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\game.h" />
+    <ClInclude Include="..\include\main.h" />
+    <ClInclude Include="..\include\util.h" />
     <ClInclude Include="..\include\version.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\game_q2r.cpp" />
+    <ClCompile Include="..\src\game_q3a.cpp" />
+    <ClCompile Include="..\src\game_quake2.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
@@ -69,8 +99,17 @@
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-Q3A'))==true">
     <TargetName>$(ProjectName)_Q3A</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-QUAKE2'))==true">
+    <TargetName>$(ProjectName)_QUAKE2</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-Q2R'))==true">
+    <TargetName>$(ProjectName)_x86_64_Q2R</TargetName>
+  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-Q3A'))==true">
     <TargetName>$(ProjectName)_x86_64_Q3A</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-QUAKE2'))==true">
+    <TargetName>$(ProjectName)_x86_64_QUAKE2</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -111,9 +150,19 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q2R'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q2R</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-Q3A'))==true">
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_Q3A</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-QUAKE2'))==true">
+    <ClCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_QUAKE2</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
