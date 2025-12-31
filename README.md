@@ -8,7 +8,7 @@ Created By: Kevin Masterson < k.m.masterson@gmail.com >
 
 ---
 
-Quake 3 only!
+This plugin only works with Quake 2, Quake 2 Remaster, and Quake 3 only!
 
 1. Install QMM ( https://github.com/thecybermind/qmm2/wiki/Installation )
 2. Make a qmmaddons/rocketmod directory inside your mod directory and place rocketmod_qmm.dll here
