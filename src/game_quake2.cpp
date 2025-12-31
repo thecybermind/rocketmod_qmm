@@ -113,21 +113,17 @@ intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
         static int item_index_rocketlauncher = 14;
 
         gentity_t* ent = (gentity_t*)args[0];
-        // make sure ent is not null and it is in use
-        if (!ent || !ent->inuse)
+
+        // make sure ent is not null, it is in use, and has a client
+        if (!ent || !ent->inuse || !ent->client)
             QMM_RET_IGNORED(0);
 
         // make sure ent is a player
         if (strcmp(ent->classname, "player") != 0)
             QMM_RET_IGNORED(0);
 
-        // make sure ent has a valid client pointer
-        gclient_t* client = ent->client;
-        if (!client)
-            QMM_RET_IGNORED(0);
-
         // most everything after this references the client persistant data, so get a shortcut
-        client_persistant_t* pers = &client->pers;
+        client_persistant_t* pers = &ent->client->pers;
 
         // make sure client is not a spectator
         if (pers->spectator)

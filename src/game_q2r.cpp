@@ -137,7 +137,7 @@ intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
         // we need to check each entity to see which has this userinfo string
         gentity_t* ent = FindEntityByUserinfo(userinfo);
 
-        // make sure ent is not null and it is in use
+        // make sure ent is not null, it is in use, and has a client
         if (!ent || !ent->inuse || !ent->client)
             QMM_RET_IGNORED(0);
 
