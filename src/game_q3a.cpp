@@ -44,7 +44,7 @@ intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
 				client->ps.stats[STAT_WEAPONS] |= 1 << WP_GAUNTLET;
 
 			// give rockets and clear machinegun ammo
-			client->ps.ammo[WP_ROCKET_LAUNCHER] = QMM_GETINTCVAR(PLID, "rocketmod_ammo");
+			client->ps.ammo[WP_ROCKET_LAUNCHER] = (int)QMM_GETINTCVAR(PLID, "rocketmod_ammo");
 			if (client->ps.ammo[WP_ROCKET_LAUNCHER] <= 0)
 				client->ps.ammo[WP_ROCKET_LAUNCHER] = 10;
 			client->ps.ammo[WP_MACHINEGUN] = 0;

@@ -56,8 +56,6 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
 
         std::vector<std::string> tokenlist = tokenlist_from_entstring(entstring);
 
-        QMM_WRITEQMMLOG(PLID, QMM_VARARGS(PLID, "%d tokens loaded from engine\n", tokenlist.size()), QMMLOG_DEBUG);
-
         // the next token is the entity's classname
         bool is_classname = false;
         int weapons = 0;
@@ -85,9 +83,6 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
             }
         }
 
-        QMM_WRITEQMMLOG(PLID, QMM_VARARGS(PLID, "%d weapons set to rocket launcher\n", weapons), QMMLOG_DEBUG);
-        QMM_WRITEQMMLOG(PLID, QMM_VARARGS(PLID, "%d ammo set to rockets\n", ammo), QMMLOG_DEBUG);
-
         entstring = entstring_from_tokenlist(tokenlist);
         args[1] = (intptr_t)entstring;
     }
@@ -107,6 +102,9 @@ intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args) {
 
 
 intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
+    // this is called near the end of PutClientInServer (respawn) and before ChangeWeapon().
+    // this is also called in ClientThink regularly, so we check a few things to verify that this is a
+    // respawn event and not during a regular Think
     if (cmd == G_LINKENTITY && QMM_GETINTCVAR(PLID, "rocketmod_enabled")) {
         // pointer to rocket launcher item
         static gitem_t* item_rocketlauncher = nullptr;
@@ -177,7 +175,7 @@ intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
         // set weapon to rocket launcher gitem_t
         pers->weapon = item_rocketlauncher;
         // set ammo to cvar (cap at max)
-        int start_ammo = QMM_GETINTCVAR(PLID, "rocketmod_ammo");
+        int start_ammo = (int)QMM_GETINTCVAR(PLID, "rocketmod_ammo");
         if (start_ammo > pers->max_rockets)
             start_ammo = pers->max_rockets;
         pers->inventory[item_index_rockets] = start_ammo;
