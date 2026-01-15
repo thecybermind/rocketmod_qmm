@@ -1,5 +1,5 @@
 # genbuild.py - generate build, MSVC, and GitHub action files for a QMM plugin
-# Copyright 2004-2025
+# Copyright 2004-2026
 # https://github.com/thecybermind/stub_qmm/
 # 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 #
@@ -390,7 +390,7 @@ def gen_makefile(name):
     with open(f"Makefile", "w", encoding="utf-8") as f:
         f.write(
             f"""# STUB_QMM - Example QMM Plugin
-# Copyright 2004-2025
+# Copyright 2004-2026
 # https://github.com/thecybermind/stub_qmm/
 # 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 # Created By: Kevin Masterson < k.m.masterson@gmail.com >

@@ -83,7 +83,7 @@ BEGIN
             VALUE "FileDescription", "rocketmod_qmm " ROCKETMOD_QMM_OS " " ROCKETMOD_QMM_ARCH "\0"
             VALUE "FileVersion", ROCKETMOD_QMM_VERSION "\0"
             VALUE "InternalName", "rocketmod_qmm\0"
-            VALUE "LegalCopyright", "Copyright 2025\0"
+            VALUE "LegalCopyright", "Copyright 2026\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "rocketmod_qmm.dll\0"
             VALUE "ProductName", "rocketmod_qmm\0"

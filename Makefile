@@ -1,5 +1,5 @@
 # STUB_QMM - Example QMM Plugin
-# Copyright 2004-2025
+# Copyright 2004-2026
 # https://github.com/thecybermind/stub_qmm/
 # 3-clause BSD license: https://opensource.org/license/bsd-3-clause
 # Created By: Kevin Masterson < k.m.masterson@gmail.com >
