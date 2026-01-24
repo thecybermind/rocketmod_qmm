@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __ROCKETMOD_QMM_GAME_H__
-#define __ROCKETMOD_QMM_GAME_H__
+#ifndef ROCKETMOD_QMM_GAME_H
+#define ROCKETMOD_QMM_GAME_H
 
 #if defined(GAME_Q3A)
     #include <q3a/game/q_shared.h>
@@ -33,4 +33,4 @@ intptr_t GAME_syscall(intptr_t cmd, intptr_t* args);
 intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args);
 intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args);
 
-#endif // __ROCKETMOD_QMM_GAME_H__
+#endif // ROCKETMOD_QMM_GAME_H

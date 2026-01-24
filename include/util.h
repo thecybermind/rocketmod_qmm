@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __ROCKETMOD_QMM_UTIL_H__
-#define __ROCKETMOD_QMM_UTIL_H__
+#ifndef ROCKETMOD_QMM_UTIL_H
+#define ROCKETMOD_QMM_UTIL_H
 
 #include <vector>
 #include <string>
@@ -24,4 +24,4 @@ std::vector<std::string> tokenlist_from_entstring(const char* entstring);
 // generate an entstring from a list of string tokens
 const char* entstring_from_tokenlist(std::vector<std::string> tokenlist);
 
-#endif // __ROCKETMOD_QMM_UTIL_H__
+#endif // ROCKETMOD_QMM_UTIL_H

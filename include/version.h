@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __ROCKETMOD_QMM_VERSION_H__
-#define __ROCKETMOD_QMM_VERSION_H__
+#ifndef ROCKETMOD_QMM_VERSION_H
+#define ROCKETMOD_QMM_VERSION_H
 
 #define STRINGIFY(x) STRINGIFY2(x)
 #define STRINGIFY2(x) #x
@@ -41,4 +41,4 @@ Created By:
 #define ROCKETMOD_QMM_COMPILE			__TIME__ " " __DATE__
 #define ROCKETMOD_QMM_BUILDER			"Kevin Masterson"
 
-#endif // __ROCKETMOD_QMM_VERSION_H__
+#endif // ROCKETMOD_QMM_VERSION_H

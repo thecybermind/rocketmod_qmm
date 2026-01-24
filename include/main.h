@@ -9,8 +9,8 @@ Created By:
 
 */
 
-#ifndef __ROCKETMOD_QMM_MAIN_H__
-#define __ROCKETMOD_QMM_MAIN_H__
+#ifndef ROCKETMOD_QMM_MAIN_H
+#define ROCKETMOD_QMM_MAIN_H
 
 #include <qmmapi.h>
 
@@ -23,4 +23,4 @@ extern intptr_t g_gentsize;
 extern gclient_t* g_clients;
 extern intptr_t g_clientsize;
 
-#endif // __ROCKETMOD_QMM_MAIN_H__
+#endif // ROCKETMOD_QMM_MAIN_H
