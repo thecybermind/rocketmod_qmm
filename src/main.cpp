@@ -70,7 +70,6 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 
 		// register cvars
 		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_version", ROCKETMOD_QMM_VERSION, CVAR_ROM | CVAR_SERVERINFO);
-		g_syscall(G_CVAR_SET, "rocketmod_version", ROCKETMOD_QMM_VERSION);
 		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_enabled", "1", CVAR_SERVERINFO | CVAR_ARCHIVE);
 		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_gauntlet", "1", CVAR_ARCHIVE);
 		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_ammo", "10", CVAR_ARCHIVE);
