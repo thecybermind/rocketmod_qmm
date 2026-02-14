@@ -105,7 +105,7 @@ intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
     // this is called near the end of PutClientInServer (respawn) and before ChangeWeapon().
     // this is also called in ClientThink regularly, so we check a few things to verify that this is a
     // respawn event and not during a regular Think
-    if (cmd == G_LINKENTITY && QMM_GETINTCVAR(PLID, "rocketmod_enabled")) {
+    if (cmd == G_LINKENTITY) {
         // pointer to rocket launcher item
         static gitem_t* item_rocketlauncher = nullptr;
         // default values based on baseq2 source, but we will find later with FindItemByClassname
@@ -129,6 +129,19 @@ intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
         if (pers->spectator)
             QMM_RET_IGNORED(0);
 
+        // check for respawn
+        // at respawn, ent->s.skinnum is set to a 0-based client index:
+        //      ent->s.skinnum = ent - g_edicts - 1;
+        // AFTER LinkEntity is called, ent->s.skinnum is changed in ChangeWeapon():
+        //      ent->s.skinnum |= ((ent->client->pers.weapon->weapmodel & 0xff) << 8);
+        // so if ent->s.skinnum is > 0xff, it's not a respawn event
+        if (ent->s.skinnum > 0xff)
+            QMM_RET_IGNORED(0);
+
+        // bail if rocketmod isn't enabled (this actually takes more cpu time than the above checks)
+        if (!QMM_GETINTCVAR(PLID, "rocketmod_enabled"))
+            QMM_RET_IGNORED(0);
+
         // find the rocketlauncher item based on first spawned player's blaster:
         // the item list starts and ends with empty gitem_t objects, so grab a valid pointer to a blaster,
         // and scan back to the beginning null entry. then use FindItemByClassname to find items in the list
@@ -149,17 +162,7 @@ intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
         }
 
         // still couldn't find rocketlauncher item, cancel
-        if (!item_rocketlauncher) {
-            QMM_RET_IGNORED(0);
-        }
-
-        // check for respawn
-        // at respawn, ent->s.skinnum is set to a 0-based client index:
-        //      ent->s.skinnum = ent - g_edicts - 1;
-        // AFTER LinkEntity is called, ent->s.skinnum is changed in ChangeWeapon():
-        //      ent->s.skinnum |= ((ent->client->pers.weapon->weapmodel & 0xff) << 8);
-        // so if ent->s.skinnum is > 0xff, it's not a respawn event
-        if (ent->s.skinnum > 0xff)
+        if (!item_rocketlauncher)
             QMM_RET_IGNORED(0);
 
         // remove current weapon from inventory

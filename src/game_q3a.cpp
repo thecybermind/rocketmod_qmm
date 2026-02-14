@@ -26,7 +26,7 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
 
 
 intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
-	if (cmd == G_GET_USERCMD && QMM_GETINTCVAR(PLID, "rocketmod_enabled")) {
+	if (cmd == G_GET_USERCMD) {
 		// this is a good place to hook when a player respawns.
 		// weird, i know, but if you look through ClientSpawn you'll
 		// see this is called after the starting machine gun is set
@@ -35,7 +35,10 @@ intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
 
 		// if the user just respawned, and he has a machine gun, we need to
 		// remove it and give him a rocket launcher
-		if (((client->ps.pm_flags & PMF_RESPAWNED) == PMF_RESPAWNED) && ((client->ps.stats[STAT_WEAPONS] & (1 << WP_MACHINEGUN)) == (1 << WP_MACHINEGUN))) {
+		if (((client->ps.pm_flags & PMF_RESPAWNED) == PMF_RESPAWNED)
+			&& ((client->ps.stats[STAT_WEAPONS] & (1 << WP_MACHINEGUN)) == (1 << WP_MACHINEGUN))
+			&& QMM_GETINTCVAR(PLID, "rocketmod_enabled")	// moved this here to run it less
+			) {
 
 			// give user rocket launcher and gauntlet only
 			client->ps.stats[STAT_WEAPONS] = 1 << WP_ROCKET_LAUNCHER;
