@@ -44,7 +44,7 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
     // this is called to give the mod level-placed entity info at the start of the map
     // unfortunately, stripper may modify weapons if it gets loaded AFTER rocketmod. no real way to fix this
     // also, don't do this if rocketmod_enabled is 0
-    if (cmd == GAME_SPAWN_ENTITIES && QMM_GETINTCVAR(PLID, "rocketmod_enabled")) {
+    if (cmd == GAME_SPAWN_ENTITIES && QMM_GETINTCVAR("rocketmod_enabled")) {
         // change spawn objects:
         // weapon_* -> weapon_rocketlauncher
         // ammo_* -> ammo_rockets
@@ -139,7 +139,7 @@ intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
             QMM_RET_IGNORED(0);
 
         // bail if rocketmod isn't enabled (this actually takes more cpu time than the above checks)
-        if (!QMM_GETINTCVAR(PLID, "rocketmod_enabled"))
+        if (!QMM_GETINTCVAR("rocketmod_enabled"))
             QMM_RET_IGNORED(0);
 
         // find the rocketlauncher item based on first spawned player's blaster:
@@ -174,7 +174,7 @@ intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
         // set weapon to rocket launcher gitem_t
         pers->weapon = item_rocketlauncher;
         // set ammo to cvar (cap at max)
-        int start_ammo = (int)QMM_GETINTCVAR(PLID, "rocketmod_ammo");
+        int start_ammo = (int)QMM_GETINTCVAR("rocketmod_ammo");
         if (start_ammo > pers->max_rockets)
             start_ammo = pers->max_rockets;
         pers->inventory[item_index_rockets] = start_ammo;

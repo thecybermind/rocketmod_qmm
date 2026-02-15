@@ -37,17 +37,17 @@ intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
 		// remove it and give him a rocket launcher
 		if (((client->ps.pm_flags & PMF_RESPAWNED) == PMF_RESPAWNED)
 			&& ((client->ps.stats[STAT_WEAPONS] & (1 << WP_MACHINEGUN)) == (1 << WP_MACHINEGUN))
-			&& QMM_GETINTCVAR(PLID, "rocketmod_enabled")	// moved this here to run it less
+			&& QMM_GETINTCVAR("rocketmod_enabled")	// moved this here to run it less
 			) {
 
 			// give user rocket launcher and gauntlet only
 			client->ps.stats[STAT_WEAPONS] = 1 << WP_ROCKET_LAUNCHER;
 
-			if (QMM_GETINTCVAR(PLID, "rocketmod_gauntlet"))
+			if (QMM_GETINTCVAR("rocketmod_gauntlet"))
 				client->ps.stats[STAT_WEAPONS] |= 1 << WP_GAUNTLET;
 
 			// give rockets and clear machinegun ammo
-			client->ps.ammo[WP_ROCKET_LAUNCHER] = (int)QMM_GETINTCVAR(PLID, "rocketmod_ammo");
+			client->ps.ammo[WP_ROCKET_LAUNCHER] = (int)QMM_GETINTCVAR("rocketmod_ammo");
 			if (client->ps.ammo[WP_ROCKET_LAUNCHER] <= 0)
 				client->ps.ammo[WP_ROCKET_LAUNCHER] = 10;
 			client->ps.ammo[WP_MACHINEGUN] = 0;
@@ -76,7 +76,7 @@ intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
 	// this is called to get level-placed entity info at the start of the map
 	// moved to syscall_Post so that QMM or the engine has already written the entity token into buf
 	// also, don't do this if rocketmod_enabled is 0
-	if (cmd == G_GET_ENTITY_TOKEN && QMM_GETINTCVAR(PLID, "rocketmod_enabled")) {
+	if (cmd == G_GET_ENTITY_TOKEN && QMM_GETINTCVAR("rocketmod_enabled")) {
 		// change spawn objects:
 		// weapon_* -> weapon_rocketlauncher
 		// ammo_* -> ammo_rockets

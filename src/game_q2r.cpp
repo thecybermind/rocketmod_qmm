@@ -66,7 +66,7 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
     // this is called to give the mod level-placed entity info at the start of the map
     // unfortunately, stripper may modify weapons if it gets loaded AFTER rocketmod. no real way to fix this
     // also, don't do this if rocketmod_enabled is 0
-    if (cmd == GAME_SPAWN_ENTITIES && QMM_GETINTCVAR(PLID, "rocketmod_enabled")) {
+    if (cmd == GAME_SPAWN_ENTITIES && QMM_GETINTCVAR("rocketmod_enabled")) {
         // change spawn objects:
         // weapon_* -> weapon_rocketlauncher
         // ammo_* -> ammo_rockets
@@ -122,7 +122,7 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
 intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
     // this is called with "fov" as key in PutClientInServer after initialization and before ChangeWeapon.
     // this is also called in ClientUserinfoChanged but we ignore that one
-    if (cmd == G_INFO_VALUEFORKEY && !s_in_client_userinfo_changed && QMM_GETINTCVAR(PLID, "rocketmod_enabled")) {
+    if (cmd == G_INFO_VALUEFORKEY && !s_in_client_userinfo_changed && QMM_GETINTCVAR("rocketmod_enabled")) {
         // pointer to rocket launcher item
         static gitem_t* item_rocketlauncher = nullptr;
 
@@ -181,12 +181,12 @@ intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
         // set weapon to rocket launcher gitem_t
         pers->weapon = item_rocketlauncher;
         // set ammo to cvar (cap at max)
-        int start_ammo = (int)QMM_GETINTCVAR(PLID, "rocketmod_ammo");
+        int start_ammo = (int)QMM_GETINTCVAR("rocketmod_ammo");
         if (start_ammo > pers->max_ammo[AMMO_ROCKETS])
             start_ammo = pers->max_ammo[AMMO_ROCKETS];
         pers->inventory[IT_AMMO_ROCKETS] = start_ammo;
         // give chainfist if gauntlet cvar is enabled
-        if (QMM_GETINTCVAR(PLID, "rocketmod_gauntlet"))
+        if (QMM_GETINTCVAR("rocketmod_gauntlet"))
             pers->inventory[IT_WEAPON_CHAINFIST] = 1;
     }
     QMM_RET_IGNORED(0);
