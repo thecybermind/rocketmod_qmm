@@ -31,6 +31,10 @@ intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
 		// weird, i know, but if you look through ClientSpawn you'll
 		// see this is called after the starting machine gun is set
 
+		// cancel if no client info
+		if (!g_clients || !g_clientsize)
+			QMM_RET_IGNORED(0);
+
 		gclient_t* client = CLIENT_FROM_NUM(args[0]);
 
 		// if the user just respawned, and he has a machine gun, we need to
