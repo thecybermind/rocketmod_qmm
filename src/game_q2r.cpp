@@ -28,6 +28,9 @@ static bool s_in_client_userinfo_changed = false;
 
 // find entity by userinfo pointer
 gentity_t* FindEntityByUserinfo(const char* userinfo) {
+    if (!g_gents || !g_gentsize)
+        return nullptr;
+
     int i = 0;
     gentity_t* ent = nullptr;
     while (i < g_numgents) {
