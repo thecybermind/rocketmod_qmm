@@ -19,8 +19,8 @@ Created By:
 #include <stdio.h>
 #include <string.h>
 
-pluginres_t* g_result = nullptr;
-plugininfo_t g_plugininfo = {
+plugin_res* g_result = nullptr;
+plugin_info g_plugininfo = {
 	QMM_PIFV_MAJOR,										// plugin interface version major
 	QMM_PIFV_MINOR,										// plugin interface version minor
 	"RocketMod",										// name of plugin
@@ -30,11 +30,11 @@ plugininfo_t g_plugininfo = {
 	"https://github.com/thecybermind/rocketmod_qmm",	// website of plugin
 	"ROCKET",											// log tag
 };
-eng_syscall_t g_syscall = nullptr;
-mod_vmMain_t g_vmMain = nullptr;
-pluginfuncs_t* g_pluginfuncs = nullptr;
+eng_syscall g_syscall = nullptr;
+mod_vmMain g_vmMain = nullptr;
+plugin_funcs* g_pluginfuncs = nullptr;
 intptr_t g_vmbase = 0;
-pluginvars_t* g_pluginvars = nullptr;
+plugin_vars* g_pluginvars = nullptr;
 
 gentity_t* g_gents = nullptr;
 intptr_t g_numgents = 0;
@@ -43,12 +43,12 @@ gclient_t* g_clients = nullptr;
 intptr_t g_clientsize = 0;
 
 
-C_DLLEXPORT void QMM_Query(plugininfo_t** pinfo) {
+C_DLLEXPORT void QMM_Query(plugin_info** pinfo) {
 	QMM_GIVE_PINFO();
 }
 
 
-C_DLLEXPORT int QMM_Attach(eng_syscall_t engfunc, mod_vmMain_t modfunc, pluginres_t* presult, pluginfuncs_t* pluginfuncs, pluginvars_t* pluginvars) {
+C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, mod_vmMain modfunc, plugin_res* presult, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
 	QMM_SAVE_VARS();
 
 	// make sure this DLL is loaded only in the right engine
