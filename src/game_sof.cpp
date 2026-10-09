@@ -21,50 +21,58 @@ Created By:
 
 
 intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
+    // this is called to give the mod level-placed entity info at the start of the map
+    // unfortunately, stripper may modify weapons if it gets loaded AFTER rocketmod. no real way to fix this
+    // also, don't do this if rocketmod_enabled is 0
+    if (cmd == GAME_SPAWN_ENTITIES && QMM_GETINTCVAR("rocketmod_enabled")) {
+        // change spawn objects:
+        // weapon_* -> item_weapon_rocketlauncher
+        // ammo_* -> item_ammo_rockets
+
+        // if entstring is null or empty, cancel
+        const char* entstring = (const char*)(args[1]);
+        if (!entstring || !*entstring)
+            QMM_RET_IGNORED(0);
+
+        std::vector<std::string> tokenlist = tokenlist_from_entstring(entstring);
+
+        // the next token is the entity's classname
+        bool is_classname = false;
+        int weapons = 0;
+        int ammo = 0;
+
+        for (auto& token : tokenlist) {
+            // if this is the value string for a "classname" key, check it
+            if (is_classname) {
+                is_classname = false;
+
+                // if its a weapon entity, make it a rocket launcher
+                if (token.substr(0, 12) == "item_weapon_") {
+                    token = "item_weapon_rocketlauncher";
+                    weapons++;
+                }
+                // if its an ammo entity, make it a rocket ammo pack
+                else if (token.substr(0, 10) == "item_ammo_") {
+                    token = "item_ammo_rockets";
+                    ammo++;
+                }
+            }
+            // if this token is "classname", then the next token is the actual class name
+            else if (token == "classname") {
+                is_classname = true;
+            }
+        }
+
+        entstring = entstring_from_tokenlist(tokenlist);
+        args[1] = (intptr_t)entstring;
+    }
+
     QMM_RET_IGNORED(0);
 }
 
 
 intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
-	if (cmd == G_GET_USERCMD) {
-		// this is a good place to hook when a player respawns.
-		// weird, i know, but if you look through ClientSpawn you'll
-		// see this is called after the starting machine gun is set
-
-		// cancel if no client info
-		if (!g_clients || !g_clientsize)
-			QMM_RET_IGNORED(0);
-
-		gclient_t* client = CLIENT_FROM_NUM(args[0]);
-
-		// if the user just respawned, and he has a machine gun, we need to
-		// remove it and give him a rocket launcher
-		if (((client->ps.pm_flags & PMF_RESPAWNED) == PMF_RESPAWNED)
-			&& ((client->ps.stats[STAT_WEAPONS] & (1 << WP_MACHINEGUN)) == (1 << WP_MACHINEGUN))
-			&& QMM_GETINTCVAR("rocketmod_enabled")	// moved this here to run it less
-			) {
-
-			// give user rocket launcher and gauntlet only
-			client->ps.stats[STAT_WEAPONS] = 1 << WP_ROCKET_LAUNCHER;
-
-			if (QMM_GETINTCVAR("rocketmod_gauntlet"))
-				client->ps.stats[STAT_WEAPONS] |= 1 << WP_GAUNTLET;
-
-			// give rockets and clear machinegun ammo
-			client->ps.ammo[WP_ROCKET_LAUNCHER] = (int)QMM_GETINTCVAR("rocketmod_ammo");
-			if (client->ps.ammo[WP_ROCKET_LAUNCHER] <= 0)
-				client->ps.ammo[WP_ROCKET_LAUNCHER] = 10;
-			client->ps.ammo[WP_MACHINEGUN] = 0;
-			client->ps.ammo[WP_GAUNTLET] = -1;
-			client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
-
-			//  set rocket launcher as the default weapon and set to ready
-			client->ps.weapon = WP_ROCKET_LAUNCHER;
-			client->ps.weaponstate = WEAPON_READY;
-		}
-	}
-	
-	QMM_RET_IGNORED(0);
+    QMM_RET_IGNORED(0);
 }
 
 
@@ -74,40 +82,55 @@ intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args) {
 
 
 intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
-	// the next token is the entity's classname
-	static bool is_classname = false;
+    static bool pmove = false;
+    if (cmd == G_PMOVE) {
+        pmove = true;
+    }
 
-	// this is called to get level-placed entity info at the start of the map
-	// moved to syscall_Post so that QMM or the engine has already written the entity token into buf
-	// also, don't do this if rocketmod_enabled is 0
-	if (cmd == G_GET_ENTITY_TOKEN && QMM_GETINTCVAR("rocketmod_enabled")) {
-		// change spawn objects:
-		// weapon_* -> weapon_rocketlauncher
-		// ammo_* -> ammo_rockets
+    // this is called near the end of PutClientInServer (respawn) after dm->clientRespawn(*ent) which sets
+    // gamemode-based weapons. this is also called in ClientThink regularly, so we check a few things to
+    // verify that this is a respawn event and not during a regular Think
+    else if (cmd == G_LINKENTITY) {
+        // skip the first linkentity after a pmove, which happens during ClientThink 
+        if (pmove) {
+            pmove = false;
+            QMM_RET_IGNORED(0);
+        }
 
-		char* buf = (char*)args[0];
-		intptr_t buflen = args[1];
+        edict_t* ent = (edict_t*)args[0];
 
-		// if this is the value string for a "classname" key, check it
-		if (is_classname) {
-			is_classname = false;
+        // make sure ent is not null, it is in use, and has a client
+        if (!ent || !ent->inuse || !ent->client)
+            QMM_RET_IGNORED(0);
 
-			// if its a weapon entity, make it a rocket launcher
-			if (!strncmp(buf, "weapon_", 7)) {
-				strncpyz(buf, "weapon_rocketlauncher", buflen);
-			}
-			// if its an ammo entity, make it a rocket ammo pack
-			else if (!strncmp(buf, "ammo_", 5)) {
-				strncpyz(buf, "ammo_rockets", buflen);
-			}
-		}
-		// if this token is "classname", then the next token is the actual class name
-		else if (!strcmp(buf, "classname")) {
-			is_classname = true;
-		}
-	}
-	
-	QMM_RET_IGNORED(0);
+        // make sure ent is a player
+        if (strcmp(ent->classname, "player") != 0)
+            QMM_RET_IGNORED(0);
+
+        // make sure entity is solid and not dead (this avoids linkentity in ClientDisconnect and player_die)
+        if (ent->solid == SOLID_NOT || ent->deadflag)
+            QMM_RET_IGNORED(0);
+
+        // make sure client is not a spectator
+        if (ent->client->pers.spectator)
+            QMM_RET_IGNORED(0);
+
+        // bail if rocketmod isn't enabled (this actually takes more cpu time than the above checks)
+        if (!QMM_GETINTCVAR("rocketmod_enabled"))
+            QMM_RET_IGNORED(0);
+
+        // remove all weapons and ammo from inventory
+        sharedEdict_t sh;
+        sh.inv = (inven_c*)ent->client->inv;
+        sh.edict = ent;
+        sh.inv->setOwner(&sh);
+        sh.inv->clearInv(true);
+        sh.inv->addWeaponType(SFW_ROCKET);
+        sh.inv->addAmmoType(AMMO_ROCKET, (int)QMM_GETINTCVAR("rocketmod_ammo"));
+        sh.inv->selectWeapon(SFW_ROCKET);
+    }
+
+    QMM_RET_IGNORED(0);
 }
 
 #endif // GAME_SOF

@@ -16,7 +16,6 @@ Created By:
 #include "version.h"
 #include "game.h"
 
-#include <stdio.h>
 #include <string.h>
 
 plugin_res* g_result = nullptr;

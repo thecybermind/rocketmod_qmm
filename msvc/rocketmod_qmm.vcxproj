@@ -68,6 +68,7 @@
     <ClCompile Include="..\src\game_q2r.cpp" />
     <ClCompile Include="..\src\game_q3a.cpp" />
     <ClCompile Include="..\src\game_quake2.cpp" />
+    <ClCompile Include="..\src\game_sof.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\util.cpp" />
   </ItemGroup>
