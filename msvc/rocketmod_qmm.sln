@@ -13,12 +13,16 @@ Global
 		Debug-Q3A|x64 = Debug-Q3A|x64
 		Debug-QUAKE2|x86 = Debug-QUAKE2|x86
 		Debug-QUAKE2|x64 = Debug-QUAKE2|x64
+		Debug-SOF|x86 = Debug-SOF|x86
+		Debug-SOF|x64 = Debug-SOF|x64
 		Release-Q2R|x86 = Release-Q2R|x86
 		Release-Q2R|x64 = Release-Q2R|x64
 		Release-Q3A|x86 = Release-Q3A|x86
 		Release-Q3A|x64 = Release-Q3A|x64
 		Release-QUAKE2|x86 = Release-QUAKE2|x86
 		Release-QUAKE2|x64 = Release-QUAKE2|x64
+		Release-SOF|x86 = Release-SOF|x86
+		Release-SOF|x64 = Release-SOF|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-Q2R|x86.ActiveCfg = Debug-Q2R|x64
@@ -33,6 +37,10 @@ Global
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-QUAKE2|x86.Build.0 = Debug-QUAKE2|Win32
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-QUAKE2|x64.ActiveCfg = Debug-QUAKE2|x64
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-QUAKE2|x64.Build.0 = Debug-QUAKE2|x64
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-SOF|x86.ActiveCfg = Debug-SOF|Win32
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-SOF|x86.Build.0 = Debug-SOF|Win32
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-SOF|x64.ActiveCfg = Debug-SOF|x64
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Debug-SOF|x64.Build.0 = Debug-SOF|x64
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-Q2R|x86.ActiveCfg = Release-Q2R|x64
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-Q2R|x86.Build.0 = Release-Q2R|x64
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-Q2R|x64.ActiveCfg = Release-Q2R|x64
@@ -45,6 +53,10 @@ Global
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-QUAKE2|x86.Build.0 = Release-QUAKE2|Win32
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-QUAKE2|x64.ActiveCfg = Release-QUAKE2|x64
 		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-QUAKE2|x64.Build.0 = Release-QUAKE2|x64
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-SOF|x86.ActiveCfg = Release-SOF|Win32
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-SOF|x86.Build.0 = Release-SOF|Win32
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-SOF|x64.ActiveCfg = Release-SOF|x64
+		{1D5BE629-82D1-4511-8559-5116BFE4338C}.Release-SOF|x64.Build.0 = Release-SOF|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
