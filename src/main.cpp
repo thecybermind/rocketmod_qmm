@@ -30,9 +30,10 @@ plugin_info g_plugininfo = {
 	"ROCKET",											// log tag
 };
 eng_syscall g_syscall = nullptr;
+eng_syscall_args g_syscall_args = nullptr;
 mod_vmMain g_vmMain = nullptr;
+mod_vmMain_args g_vmMain_args = nullptr;
 plugin_funcs* g_pluginfuncs = nullptr;
-intptr_t g_vmbase = 0;
 plugin_vars* g_pluginvars = nullptr;
 
 gentity_t* g_gents = nullptr;
@@ -47,7 +48,7 @@ C_DLLEXPORT void QMM_Query(plugin_info** pinfo) {
 }
 
 
-C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, mod_vmMain modfunc, plugin_res* presult, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
+C_DLLEXPORT int QMM_Attach(eng_syscall engfunc, eng_syscall_args engfunc_args, mod_vmMain modfunc, mod_vmMain_args modfunc_args, plugin_funcs* pluginfuncs, plugin_vars* pluginvars) {
 	QMM_SAVE_VARS();
 
 	// make sure this DLL is loaded only in the right engine
@@ -62,7 +63,7 @@ C_DLLEXPORT void QMM_Detach() {
 }
 
 
-C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
+C_DLLEXPORT intptr_t QMM_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
 	if (cmd == GAME_INIT) {
 		// init msg
 		QMM_WRITEQMMLOG(QMMLOG_INFO, "RocketMod v" ROCKETMOD_QMM_VERSION " by " ROCKETMOD_QMM_BUILDER " is loaded\n");
@@ -74,11 +75,11 @@ C_DLLEXPORT intptr_t QMM_vmMain(intptr_t cmd, intptr_t* args) {
 		g_syscall(G_CVAR_REGISTER, nullptr, "rocketmod_ammo", "10", CVAR_ARCHIVE);
 	}
 
-	return GAME_vmMain(cmd, args);
+	return GAME_vmMain(results, cmd, args);
 }
 
 
-C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
+C_DLLEXPORT intptr_t QMM_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
 	// store client data
 	if (cmd == G_LOCATE_GAME_DATA) {
 		g_gents = (gentity_t*)args[0];
@@ -88,15 +89,15 @@ C_DLLEXPORT intptr_t QMM_syscall(intptr_t cmd, intptr_t* args) {
 		g_clientsize = args[4];
 	}
 
-	return GAME_syscall(cmd, args);
+	return GAME_syscall(results, cmd, args);
 }
 
 
-C_DLLEXPORT intptr_t QMM_vmMain_Post(intptr_t cmd, intptr_t* args) {
-	return GAME_vmMain_Post(cmd, args);
+C_DLLEXPORT intptr_t QMM_vmMain_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
+	return GAME_vmMain_Post(results, cmd, args);
 }
 
 
-C_DLLEXPORT intptr_t QMM_syscall_Post(intptr_t cmd, intptr_t* args) {
-	return GAME_syscall_Post(cmd, args);
+C_DLLEXPORT intptr_t QMM_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
+	return GAME_syscall_Post(results, cmd, args);
 }

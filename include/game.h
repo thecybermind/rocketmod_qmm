@@ -33,9 +33,9 @@ Created By:
     #error Only supported in Quake 2, Quake 3, and Soldier of Fortune!
 #endif
 
-intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args);
-intptr_t GAME_syscall(intptr_t cmd, intptr_t* args);
-intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args);
-intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args);
+intptr_t GAME_vmMain(result_vars* results, intptr_t cmd, intptr_t* args);
+intptr_t GAME_syscall(result_vars* results, intptr_t cmd, intptr_t* args);
+intptr_t GAME_vmMain_Post(result_vars* results, intptr_t cmd, intptr_t* args);
+intptr_t GAME_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args);
 
 #endif // ROCKETMOD_QMM_GAME_H

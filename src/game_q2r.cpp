@@ -16,7 +16,7 @@ Created By:
 #include "version.h"
 #include "game.h"
 
-#include "util.h"
+#include "util.hpp"
 #include "main.h"
 
 // pointer to start of item list
@@ -27,7 +27,7 @@ static bool s_in_client_userinfo_changed = false;
 
 
 // find entity by userinfo pointer
-gentity_t* FindEntityByUserinfo(const char* userinfo) {
+static gentity_t* FindEntityByUserinfo(const char* userinfo) {
     if (!g_gents || !g_gentsize)
         return nullptr;
 
@@ -49,7 +49,7 @@ gentity_t* FindEntityByUserinfo(const char* userinfo) {
 
 
 // find item in s_itemlist by classname
-gitem_t* FindItemByClassname(const char* classname) {
+static gitem_t* FindItemByClassname(const char* classname) {
     if (!s_itemlist)
         return nullptr;
 
@@ -65,7 +65,7 @@ gitem_t* FindItemByClassname(const char* classname) {
 }
 
 
-intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
+intptr_t GAME_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
     // this is called to give the mod level-placed entity info at the start of the map
     // unfortunately, stripper may modify weapons if it gets loaded AFTER rocketmod. no real way to fix this
     // also, don't do this if rocketmod_enabled is 0
@@ -114,7 +114,7 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
 
     // we use G_INFO_VALUEFORKEY with a key of "fov" to determine if a user has respawned. but that is also checked
     // inside ClientUserinfoChanged. so we set a flag to ignore it in GAME_CLIENT_USERINFO_CHANGED and clear in _Post
-    if (cmd == GAME_CLIENT_USERINFO_CHANGED) {
+    else if (cmd == GAME_CLIENT_USERINFO_CHANGED) {
         s_in_client_userinfo_changed = true;
     }
 
@@ -122,7 +122,7 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
 }
 
 
-intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
+intptr_t GAME_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
     // this is called with "fov" as key in PutClientInServer after initialization and before ChangeWeapon.
     // this is also called in ClientUserinfoChanged but we ignore that one
     if (cmd == G_INFO_VALUEFORKEY && !s_in_client_userinfo_changed && QMM_GETINTCVAR("rocketmod_enabled")) {
@@ -196,7 +196,7 @@ intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
 }
 
 
-intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args) {
+intptr_t GAME_vmMain_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
     // we use G_INFO_VALUEFORKEY with a key of "fov" to determine if a user has respawned. but that is also checked
     // inside ClientUserinfoChanged. so we set a flag to ignore it in GAME_CLIENT_USERINFO_CHANGED and clear in _Post
     if (cmd == GAME_CLIENT_USERINFO_CHANGED) {
@@ -207,7 +207,7 @@ intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args) {
 }
 
 
-intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
+intptr_t GAME_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
     QMM_RET_IGNORED(0);
 }
 
