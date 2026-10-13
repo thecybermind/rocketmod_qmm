@@ -90,19 +90,19 @@ $(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)_$(1).so: $$(addprefix $(OBJ_DIR)/debug-$(
 
 $(OBJ_DIR)/release-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
-	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) -DGAME_STR=$(1) $(REL_CFLAGS_32) -c $$< -o $$@
+	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(REL_CFLAGS_32) -c $$< -o $$@
 
 $(OBJ_DIR)/release-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
-	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) -DGAME_STR=$(1) $(REL_CFLAGS_64) -c $$< -o $$@
+	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(REL_CFLAGS_64) -c $$< -o $$@
 
 $(OBJ_DIR)/debug-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
-	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) -DGAME_STR=$(1) $(DBG_CFLAGS_32) -c $$< -o $$@
+	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(DBG_CFLAGS_32) -c $$< -o $$@
 
 $(OBJ_DIR)/debug-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
 	mkdir -p $$(@D)
-	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) -DGAME_STR=$(1) $(DBG_CFLAGS_64) -c $$< -o $$@
+	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(DBG_CFLAGS_64) -c $$< -o $$@
 
 -include $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES:.o=.d))
 -include $$(addprefix $(OBJ_DIR)/release-$(1)/x86_64/,$(OBJ_FILES:.o=.d))
