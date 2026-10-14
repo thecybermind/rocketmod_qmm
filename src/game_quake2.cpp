@@ -16,7 +16,7 @@ Created By:
 #include "version.h"
 #include "game.h"
 
-#include "util.h"
+#include "util.hpp"
 #include "main.h"
 
 // pointer to start of item list
@@ -24,7 +24,7 @@ static gitem_t* s_itemlist = nullptr;
 
 
 // find item in s_itemlist by classname
-gitem_t* FindItemByClassname(const char* classname) {
+static gitem_t* FindItemByClassname(const char* classname) {
     if (!s_itemlist)
         return nullptr;
 
@@ -40,7 +40,7 @@ gitem_t* FindItemByClassname(const char* classname) {
 }
 
 
-intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
+intptr_t GAME_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
     // this is called to give the mod level-placed entity info at the start of the map
     // unfortunately, stripper may modify weapons if it gets loaded AFTER rocketmod. no real way to fix this
     // also, don't do this if rocketmod_enabled is 0
@@ -85,23 +85,25 @@ intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args) {
 
         entstring = entstring_from_tokenlist(tokenlist);
         args[1] = (intptr_t)entstring;
+
+        QMM_WRITEQMMLOG(QMMLOG_DEBUG, "Map entity modification complete: %d weapons and %d ammo changed.\n", weapons, ammo);
     }
 
     QMM_RET_IGNORED(0);
 }
 
 
-intptr_t GAME_syscall(intptr_t cmd, intptr_t* args) {
+intptr_t GAME_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
     QMM_RET_IGNORED(0);
 }
 
 
-intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args) {
+intptr_t GAME_vmMain_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
     QMM_RET_IGNORED(0);
 }
 
 
-intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args) {
+intptr_t GAME_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
     // this is called near the end of PutClientInServer (respawn) and before ChangeWeapon().
     // this is also called in ClientThink regularly, so we check a few things to verify that this is a
     // respawn event and not during a regular Think

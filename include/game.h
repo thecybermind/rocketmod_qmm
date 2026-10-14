@@ -12,6 +12,9 @@ Created By:
 #ifndef ROCKETMOD_QMM_GAME_H
 #define ROCKETMOD_QMM_GAME_H
 
+#include <qmmapi.h>
+#include <cstddef>
+
 #if defined(GAME_Q3A)
     #include <q3a/game/q_shared.h>
     #include <q3a/game/g_local.h>
@@ -26,16 +29,16 @@ Created By:
     #define GAME_INCLUDE
     #include <sof/gamecpp/g_local.h>
     #undef GAME_INCLUDE
-    #include <sof/player/w_weapons.h>
-    #include <sof/qcommon/w_types.h>
     #include <game_sof.h>
+    #error Not supported yet!
 #else
-    #error Only supported in Quake 2, Quake 3, and Soldier of Fortune!
+    // #error Only supported in Quake 2, Quake 3, and Soldier of Fortune!
+    #error Only supported in Quake 2, Quake 3!
 #endif
 
-intptr_t GAME_vmMain(intptr_t cmd, intptr_t* args);
-intptr_t GAME_syscall(intptr_t cmd, intptr_t* args);
-intptr_t GAME_vmMain_Post(intptr_t cmd, intptr_t* args);
-intptr_t GAME_syscall_Post(intptr_t cmd, intptr_t* args);
+intptr_t GAME_vmMain(result_vars* results, intptr_t cmd, intptr_t* args);
+intptr_t GAME_syscall(result_vars* results, intptr_t cmd, intptr_t* args);
+intptr_t GAME_vmMain_Post(result_vars* results, intptr_t cmd, intptr_t* args);
+intptr_t GAME_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args);
 
 #endif // ROCKETMOD_QMM_GAME_H

@@ -63,6 +63,7 @@
     <ClInclude Include="..\include\main.h" />
     <ClInclude Include="..\include\util.h" />
     <ClInclude Include="..\include\version.h" />
+    <ClInclude Include="..\include\vhook.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\game_q2r.cpp" />
