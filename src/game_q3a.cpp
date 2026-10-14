@@ -87,6 +87,8 @@ intptr_t GAME_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
 
 		char* buf = (char*)args[0];
 		intptr_t buflen = args[1];
+		int weapons = 0;
+		int ammo = 0;
 
 		// if this is the value string for a "classname" key, check it
 		if (is_classname) {
@@ -95,16 +97,20 @@ intptr_t GAME_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
 			// if its a weapon entity, make it a rocket launcher
 			if (!strncmp(buf, "weapon_", 7)) {
 				strncpyz(buf, "weapon_rocketlauncher", buflen);
+				weapons++;
 			}
 			// if its an ammo entity, make it a rocket ammo pack
 			else if (!strncmp(buf, "ammo_", 5)) {
 				strncpyz(buf, "ammo_rockets", buflen);
+				ammo++;
 			}
 		}
 		// if this token is "classname", then the next token is the actual class name
 		else if (!strcmp(buf, "classname")) {
 			is_classname = true;
 		}
+
+		QMM_WRITEQMMLOG(QMMLOG_DEBUG, "Map entity modification complete: %d weapons and %d ammo changed.\n", weapons, ammo);
 	}
 	
 	QMM_RET_IGNORED(0);

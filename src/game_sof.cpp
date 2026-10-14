@@ -13,17 +13,70 @@ Created By:
 
 #include <qmmapi.h>
 
+#include <inttypes.h>
+#include <stdint.h>
 #include "version.h"
 #include "game.h"
 
+#include <sof/player/w_weapons.h>
+#include <sof/qcommon/w_types.h>
 #include <sof/gamecpp/dm_private.h>
+#include <sof/gamecpp/q_sh_interface.h>
 
+#include "vhook.hpp"
 #include "util.hpp"
 #include "main.h"
 
-static player_export_t* pe = nullptr;
+static player_export_t* pe_api = nullptr;
 static gamemode_ic** pdm = nullptr;
 
+#ifdef _WIN32
+#define THISCALL(obj, func, ...) func(obj, 0, ## __VA_ARGS__)
+#define FASTCALL __fastcall
+#define SELFARG self, void*
+#else
+#define THISCALL(obj, func, ...) func(obj, ## __VA_ARGS__ )
+#define FASTCALL
+#define SELFARG self 
+#endif
+
+typedef void(FASTCALL* gamemode_ic_clientRespawn)(gamemode_ic* SELFARG, edict_t& ent);
+gamemode_ic_clientRespawn clientRespawnOld = nullptr;
+void FASTCALL clientRespawnHook(gamemode_ic* SELFARG, edict_t& ent) {
+    QMM_WRITEQMMLOG(QMMLOG_INFO, "clientRespawnHook called!\n");
+
+    if (clientRespawnOld) {
+        QMM_WRITEQMMLOG(QMMLOG_INFO, "clientRespawnOld called!\n");
+        THISCALL(self, clientRespawnOld, ent);
+        QMM_WRITEQMMLOG(QMMLOG_INFO, "clientRespawnOld returned!\n");
+    }
+
+    if (pe_api && pe_api->isClient && !*pe_api->isClient) {
+        ent.client->ps.stats[STAT_WEAPON] = SFW_ROCKET;
+        ent.client->ps.stats[STAT_CLIP_AMMO] = 4;
+        ent.client->ps.stats[STAT_AMMO] = 10;
+        ent.client->ps.stats[STAT_ARMOR] = 100;
+    }
+
+    // re-precache all weapons
+    // if (pe_api)
+    //     pe_api->PrecacheViewWeaponModels(0xFFFFFFFF);
+
+    QMM_WRITEQMMLOG(QMMLOG_INFO, "clientRespawnHook returning!\n");
+}
+
+typedef char* (FASTCALL* gamemode_ic_getGameName)(gamemode_ic* SELFARG);
+gamemode_ic_getGameName getGameNameOld = nullptr;
+char* FASTCALL getGameNameHook(gamemode_ic* SELFARG) {
+    QMM_WRITEQMMLOG(QMMLOG_INFO, "getGameNameHook called!\n");
+
+    if (getGameNameOld)
+        THISCALL(self, getGameNameOld);
+
+    QMM_WRITEQMMLOG(QMMLOG_INFO, "getGameNameHook returning!\n");
+
+    return (char*)"Test!";
+}
 
 intptr_t GAME_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
     // this is called to give the mod level-placed entity info at the start of the map
@@ -31,8 +84,8 @@ intptr_t GAME_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
     // also, don't do this if rocketmod_enabled is 0
     if (cmd == GAME_SPAWN_ENTITIES && QMM_GETINTCVAR("rocketmod_enabled")) {
         // change spawn objects:
-        // weapon_* -> item_weapon_rocketlauncher
-        // ammo_* -> item_ammo_rocket
+        // item_weapon_* -> item_weapon_rocketlauncher
+        // item_ammo_* -> item_ammo_rocket
 
         // if entstring is null or empty, cancel
         const char* entstring = (const char*)(args[1]);
@@ -70,11 +123,15 @@ intptr_t GAME_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
 
         entstring = entstring_from_tokenlist(tokenlist);
         args[1] = (intptr_t)entstring;
+
+        QMM_WRITEQMMLOG(QMMLOG_DEBUG, "Map entity modification complete: %d weapons and %d ammo changed.\n", weapons, ammo);
     }
 
     QMM_RET_IGNORED(0);
 }
 
+
+static VHook pdm_hook;
 
 intptr_t GAME_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
     // grab dm pointer just after it is assigned and given a game type
@@ -83,16 +140,21 @@ intptr_t GAME_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
         if (package && strcmp(package, "dm_generic") == 0)
             pdm = (gamemode_ic**)(package + 0x17800);
 
-        if (pdm && *pdm)
-            QMM_WRITEQMMLOG(QMMLOG_INFO, "dm gamename! %s %d\n", (*pdm)->getGameName(), (*pdm)->isDM());
-    }
+        if (pdm && *pdm) {
+            pdm_hook.copy_vtable(*pdm);
 
+            clientRespawnOld = (gamemode_ic_clientRespawn)pdm_hook.set_vtable_index(48, (void*)clientRespawnHook);
+            if (clientRespawnOld)
+                QMM_WRITEQMMLOG(QMMLOG_INFO, "clientRespawn hook installed!\n");
+        }
+    }
+#if 0
     // this is called near the end of PutClientInServer (respawn) after dm->clientRespawn(*ent) which sets
     // gamemode-based weapons. this is also called in ClientThink regularly, so we check a few things to
     // verify that this is a respawn event and not during a regular Think
     else if (0 && cmd == G_LINKENTITY) {
         // we need player api pointer
-        if (!pe)
+        if (!pe_api)
             QMM_RET_IGNORED(0);
 
         edict_t* ent = (edict_t*)args[0];
@@ -158,14 +220,14 @@ intptr_t GAME_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
         }
 
         // re-precache all weapons
-        pe->PrecacheViewWeaponModels(0xFFFFFFFF);
+        pe_api->PrecacheViewWeaponModels(0xFFFFFFFF);
 
         sh.inv->curWeaponID = SFW_ROCKET;
         sh.inv->curWeaponSlot = 9;
         sh.inv->curWeaponType = SFW_ROCKET;
         sh.inv->selectedWeaponSlot = 9;
 
-        if(!pe->isClient) {
+        if(!pe_api->isClient) {
             ent->client->ps.gunType= sh.inv->curWeaponID;
             ent->client->ps.gunClip=4;
             ent->client->ps.gunAmmo= sh.inv->ammo[AMMO_ROCKET];
@@ -180,7 +242,7 @@ intptr_t GAME_syscall(result_vars* results, intptr_t cmd, intptr_t* args) {
         if (gun)
             gun->SetAllPartsOnOff(true);
     }
-
+#endif
     QMM_RET_IGNORED(0);
 }
 
@@ -193,12 +255,12 @@ intptr_t GAME_vmMain_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
 intptr_t GAME_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
     // we need to call some functions on the player api, so we need to steal this return value
     if (cmd == G_SYS_GETPLAYERAPI) {
-        pe = QMM_VAR_FINAL_RETURN(player_export_t*);
+        pe_api = QMM_VAR_FINAL_RETURN(player_export_t*);
     }
 
     // handle when player api is unloaded
     else if (cmd == G_SYS_UNLOADPLAYER) {
-        pe = nullptr;
+        pe_api = nullptr;
     }
 
     QMM_RET_IGNORED(0);

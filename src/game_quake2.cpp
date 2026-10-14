@@ -85,6 +85,8 @@ intptr_t GAME_vmMain(result_vars* results, intptr_t cmd, intptr_t* args) {
 
         entstring = entstring_from_tokenlist(tokenlist);
         args[1] = (intptr_t)entstring;
+
+        QMM_WRITEQMMLOG(QMMLOG_DEBUG, "Map entity modification complete: %d weapons and %d ammo changed.\n", weapons, ammo);
     }
 
     QMM_RET_IGNORED(0);
