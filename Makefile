@@ -6,7 +6,7 @@
 
 BIN_32 := rocketmod_qmm
 BIN_64 := rocketmod_qmm_x86_64
-GAMES := Q3A QUAKE2 SOF
+GAMES := Q3A QUAKE2
 
 CC := g++
 
