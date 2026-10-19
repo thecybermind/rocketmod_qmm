@@ -1,6 +1,8 @@
 #ifndef ROCKETMOD_QMM_VHOOK_HPP
 #define ROCKETMOD_QMM_VHOOK_HPP
 
+#if defined(GAME_SOF)
+
 #include <cstring>
 #include <vector>
 
@@ -94,5 +96,7 @@ class VHook {
             return old_func;
         }
 };
+
+#endif // GAME_SOF
 
 #endif // ROCKETMOD_QMM_VHOOK_HPP

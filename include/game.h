@@ -18,6 +18,7 @@ Created By:
 #if defined(GAME_Q3A)
     #include <q3a/game/q_shared.h>
     #include <q3a/game/g_local.h>
+    #include <game_q3a.h>
 #elif defined(GAME_QUAKE2)
     #include <quake2/game/g_local.h>
     #include <game_quake2.h>

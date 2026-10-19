@@ -181,7 +181,7 @@ intptr_t GAME_syscall_Post(result_vars* results, intptr_t cmd, intptr_t* args) {
             start_ammo = pers->max_rockets;
         pers->inventory[item_index_rockets] = start_ammo;
         // set gun model
-        ent->client->ps.gunindex = g_syscall(G_MODELINDEX, pers->weapon->view_model);
+        ent->client->ps.gunindex = QMM_SYSCALL(G_MODELINDEX, pers->weapon->view_model);
     }
 
     QMM_RET_IGNORED(0);
