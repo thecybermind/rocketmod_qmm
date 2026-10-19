@@ -61,7 +61,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\game.h" />
     <ClInclude Include="..\include\main.h" />
-    <ClInclude Include="..\include\util.h" />
+    <ClInclude Include="..\include\util.hpp" />
     <ClInclude Include="..\include\version.h" />
     <ClInclude Include="..\include\vhook.hpp" />
   </ItemGroup>
