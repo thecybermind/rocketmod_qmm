@@ -9,10 +9,6 @@
       <Configuration>Debug-QUAKE2</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-SOF|Win32">
-      <Configuration>Debug-SOF</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug-Q2R|x64">
       <Configuration>Debug-Q2R</Configuration>
       <Platform>x64</Platform>
@@ -25,20 +21,12 @@
       <Configuration>Debug-QUAKE2</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug-SOF|x64">
-      <Configuration>Debug-SOF</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Q3A|Win32">
       <Configuration>Release-Q3A</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-QUAKE2|Win32">
       <Configuration>Release-QUAKE2</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-SOF|Win32">
-      <Configuration>Release-SOF</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-Q2R|x64">
@@ -51,10 +39,6 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release-QUAKE2|x64">
       <Configuration>Release-QUAKE2</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release-SOF|x64">
-      <Configuration>Release-SOF</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -120,9 +104,6 @@
   <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-QUAKE2'))==true">
     <TargetName>$(ProjectName)_QUAKE2</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Platform)=='Win32' And $(Configuration.EndsWith('-SOF'))==true">
-    <TargetName>$(ProjectName)_SOF</TargetName>
-  </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-Q2R'))==true">
     <TargetName>$(ProjectName)_x86_64_Q2R</TargetName>
   </PropertyGroup>
@@ -131,9 +112,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-QUAKE2'))==true">
     <TargetName>$(ProjectName)_x86_64_QUAKE2</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Platform)=='x64' And $(Configuration.EndsWith('-SOF'))==true">
-    <TargetName>$(ProjectName)_x86_64_SOF</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -187,11 +165,6 @@
   <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-QUAKE2'))==true">
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_QUAKE2;GAME_STR="QUAKE2"</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$(Configuration.EndsWith('-SOF'))==true">
-    <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);GAME_SOF;GAME_STR="SOF"</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

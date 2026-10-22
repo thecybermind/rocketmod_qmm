@@ -6,7 +6,6 @@
 
 BIN_32 := rocketmod_qmm
 BIN_64 := rocketmod_qmm_x86_64
-GAMES := Q3A QUAKE2
 
 CC := g++
 
@@ -57,59 +56,104 @@ help:
 
 all: release debug
 release: release32 release64
-release32: $(addprefix release32-,$(GAMES))
-release64: $(addprefix release64-,$(GAMES))
+release32: release32-Q3A release32-QUAKE2
+release64: release64-Q3A release64-QUAKE2
 debug: debug32 debug64
-debug32: $(addprefix debug32-,$(GAMES))
-debug64: $(addprefix debug64-,$(GAMES))
+debug32: debug32-Q3A debug32-QUAKE2
+debug64: debug64-Q3A debug64-QUAKE2
+game-Q3A: release-Q3A debug-Q3A
+release-Q3A: release32-Q3A release64-Q3A
+debug-Q3A: debug32-Q3A debug64-Q3A
+release32-Q3A: $(BIN_DIR)/release-Q3A/x86/$(BIN_32)_Q3A.so
+debug32-Q3A: $(BIN_DIR)/debug-Q3A/x86/$(BIN_32)_Q3A.so
 
-define gen_rules
-game-$(1): release-$(1) debug-$(1)
-release-$(1): release32-$(1) release64-$(1)
-debug-$(1): debug32-$(1) debug64-$(1)
-release32-$(1): $(BIN_DIR)/release-$(1)/x86/$(BIN_32)_$(1).so
-release64-$(1): $(BIN_DIR)/release-$(1)/x86_64/$(BIN_64)_$(1).so
-debug32-$(1): $(BIN_DIR)/debug-$(1)/x86/$(BIN_32)_$(1).so
-debug64-$(1): $(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)_$(1).so
-
-$(BIN_DIR)/release-$(1)/x86/$(BIN_32)_$(1).so: $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES))
-	mkdir -p $$(@D)
-	$(CC) $(REL_LDFLAGS_32) -o $$@ $(LDLIBS) $$^
+$(BIN_DIR)/release-Q3A/x86/$(BIN_32)_Q3A.so: $(addprefix $(OBJ_DIR)/release-Q3A/x86/,$(OBJ_FILES))
+	mkdir -p $(@D)
+	$(CC) $(REL_LDFLAGS_32) -o $@ $(LDLIBS) $^
 	
-$(BIN_DIR)/release-$(1)/x86_64/$(BIN_64)_$(1).so: $$(addprefix $(OBJ_DIR)/release-$(1)/x86_64/,$(OBJ_FILES))
-	mkdir -p $$(@D)
-	$(CC) $(REL_LDFLAGS_64) -o $$@ $(LDLIBS) $$^
+$(BIN_DIR)/debug-Q3A/x86/$(BIN_32)_Q3A.so: $(addprefix $(OBJ_DIR)/debug-Q3A/x86/,$(OBJ_FILES))
+	mkdir -p $(@D)
+	$(CC) $(DBG_LDFLAGS_32) -o $@ $(LDLIBS) $^
+
+$(OBJ_DIR)/release-Q3A/x86/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(REL_CPPFLAGS) -DGAME_Q3A -DGAME_STR=\"Q3A\" $(REL_CFLAGS_32) -c $< -o $@
+
+$(OBJ_DIR)/debug-Q3A/x86/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(DBG_CPPFLAGS) -DGAME_Q3A -DGAME_STR=\"Q3A\" $(DBG_CFLAGS_32) -c $< -o $@
+
+-include $(addprefix $(OBJ_DIR)/release-Q3A/x86/,$(OBJ_FILES:.o=.d))
+-include $(addprefix $(OBJ_DIR)/debug-Q3A/x86/,$(OBJ_FILES:.o=.d))
+
+release64-Q3A: $(BIN_DIR)/release-Q3A/x86_64/$(BIN_64)_Q3A.so
+debug64-Q3A: $(BIN_DIR)/debug-Q3A/x86_64/$(BIN_64)_Q3A.so
+
+$(BIN_DIR)/release-Q3A/x86_64/$(BIN_64)_Q3A.so: $(addprefix $(OBJ_DIR)/release-Q3A/x86_64/,$(OBJ_FILES))
+	mkdir -p $(@D)
+	$(CC) $(REL_LDFLAGS_64) -o $@ $(LDLIBS) $^	
+
+$(BIN_DIR)/debug-Q3A/x86_64/$(BIN_64)_Q3A.so: $(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES))
+	mkdir -p $(@D)
+	$(CC) $(DBG_LDFLAGS_64) -o $@ $(LDLIBS) $^
+
+$(OBJ_DIR)/release-Q3A/x86_64/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(REL_CPPFLAGS) -DGAME_Q3A -DGAME_STR=\"Q3A\" $(REL_CFLAGS_64) -c $< -o $@
+
+$(OBJ_DIR)/debug-Q3A/x86_64/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(DBG_CPPFLAGS) -DGAME_Q3A -DGAME_STR=\"Q3A\" $(DBG_CFLAGS_64) -c $< -o $@
+
+-include $(addprefix $(OBJ_DIR)/release-Q3A/x86_64/,$(OBJ_FILES:.o=.d))
+-include $(addprefix $(OBJ_DIR)/debug-Q3A/x86_64/,$(OBJ_FILES:.o=.d))
+
+game-QUAKE2: release-QUAKE2 debug-QUAKE2
+release-QUAKE2: release32-QUAKE2 release64-QUAKE2
+debug-QUAKE2: debug32-QUAKE2 debug64-QUAKE2
+release32-QUAKE2: $(BIN_DIR)/release-QUAKE2/x86/$(BIN_32)_QUAKE2.so
+debug32-QUAKE2: $(BIN_DIR)/debug-QUAKE2/x86/$(BIN_32)_QUAKE2.so
+
+$(BIN_DIR)/release-QUAKE2/x86/$(BIN_32)_QUAKE2.so: $(addprefix $(OBJ_DIR)/release-QUAKE2/x86/,$(OBJ_FILES))
+	mkdir -p $(@D)
+	$(CC) $(REL_LDFLAGS_32) -o $@ $(LDLIBS) $^
 	
-$(BIN_DIR)/debug-$(1)/x86/$(BIN_32)_$(1).so: $$(addprefix $(OBJ_DIR)/debug-$(1)/x86/,$(OBJ_FILES))
-	mkdir -p $$(@D)
-	$(CC) $(DBG_LDFLAGS_32) -o $$@ $(LDLIBS) $$^
-	
-$(BIN_DIR)/debug-$(1)/x86_64/$(BIN_64)_$(1).so: $$(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES))
-	mkdir -p $$(@D)
-	$(CC) $(DBG_LDFLAGS_64) -o $$@ $(LDLIBS) $$^
+$(BIN_DIR)/debug-QUAKE2/x86/$(BIN_32)_QUAKE2.so: $(addprefix $(OBJ_DIR)/debug-QUAKE2/x86/,$(OBJ_FILES))
+	mkdir -p $(@D)
+	$(CC) $(DBG_LDFLAGS_32) -o $@ $(LDLIBS) $^
 
-$(OBJ_DIR)/release-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
-	mkdir -p $$(@D)
-	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(REL_CFLAGS_32) -c $$< -o $$@
+$(OBJ_DIR)/release-QUAKE2/x86/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(REL_CPPFLAGS) -DGAME_QUAKE2 -DGAME_STR=\"QUAKE2\" $(REL_CFLAGS_32) -c $< -o $@
 
-$(OBJ_DIR)/release-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
-	mkdir -p $$(@D)
-	$(CC) $(REL_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(REL_CFLAGS_64) -c $$< -o $$@
+$(OBJ_DIR)/debug-QUAKE2/x86/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(DBG_CPPFLAGS) -DGAME_QUAKE2 -DGAME_STR=\"QUAKE2\" $(DBG_CFLAGS_32) -c $< -o $@
 
-$(OBJ_DIR)/debug-$(1)/x86/%.o: $(SRC_DIR)/%.cpp
-	mkdir -p $$(@D)
-	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(DBG_CFLAGS_32) -c $$< -o $$@
+-include $(addprefix $(OBJ_DIR)/release-QUAKE2/x86/,$(OBJ_FILES:.o=.d))
+-include $(addprefix $(OBJ_DIR)/debug-QUAKE2/x86/,$(OBJ_FILES:.o=.d))
 
-$(OBJ_DIR)/debug-$(1)/x86_64/%.o: $(SRC_DIR)/%.cpp
-	mkdir -p $$(@D)
-	$(CC) $(DBG_CPPFLAGS) -DGAME_$(1) -DGAME_STR=\"$(1)\" $(DBG_CFLAGS_64) -c $$< -o $$@
+release64-QUAKE2: $(BIN_DIR)/release-QUAKE2/x86_64/$(BIN_64)_QUAKE2.so
+debug64-QUAKE2: $(BIN_DIR)/debug-QUAKE2/x86_64/$(BIN_64)_QUAKE2.so
 
--include $$(addprefix $(OBJ_DIR)/release-$(1)/x86/,$(OBJ_FILES:.o=.d))
--include $$(addprefix $(OBJ_DIR)/release-$(1)/x86_64/,$(OBJ_FILES:.o=.d))
--include $$(addprefix $(OBJ_DIR)/debug-$(1)/x86/,$(OBJ_FILES:.o=.d))
--include $$(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES:.o=.d))
-endef
-$(foreach game,$(GAMES),$(eval $(call gen_rules,$(game))))
+$(BIN_DIR)/release-QUAKE2/x86_64/$(BIN_64)_QUAKE2.so: $(addprefix $(OBJ_DIR)/release-QUAKE2/x86_64/,$(OBJ_FILES))
+	mkdir -p $(@D)
+	$(CC) $(REL_LDFLAGS_64) -o $@ $(LDLIBS) $^	
+
+$(BIN_DIR)/debug-QUAKE2/x86_64/$(BIN_64)_QUAKE2.so: $(addprefix $(OBJ_DIR)/debug-$(1)/x86_64/,$(OBJ_FILES))
+	mkdir -p $(@D)
+	$(CC) $(DBG_LDFLAGS_64) -o $@ $(LDLIBS) $^
+
+$(OBJ_DIR)/release-QUAKE2/x86_64/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(REL_CPPFLAGS) -DGAME_QUAKE2 -DGAME_STR=\"QUAKE2\" $(REL_CFLAGS_64) -c $< -o $@
+
+$(OBJ_DIR)/debug-QUAKE2/x86_64/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(@D)
+	$(CC) $(DBG_CPPFLAGS) -DGAME_QUAKE2 -DGAME_STR=\"QUAKE2\" $(DBG_CFLAGS_64) -c $< -o $@
+
+-include $(addprefix $(OBJ_DIR)/release-QUAKE2/x86_64/,$(OBJ_FILES:.o=.d))
+-include $(addprefix $(OBJ_DIR)/debug-QUAKE2/x86_64/,$(OBJ_FILES:.o=.d))
 
 clean:
 	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)

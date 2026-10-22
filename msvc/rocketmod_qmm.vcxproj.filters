@@ -21,13 +21,13 @@
     <ClInclude Include="..\include\main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\util.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vhook.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\util.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,13 +41,13 @@
     <ClCompile Include="..\src\game_quake2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\game_sof.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\util.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\game_sof.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

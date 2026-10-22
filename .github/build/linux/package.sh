@@ -4,10 +4,8 @@ cd package
 rm -f *
 cp ../README.md ./
 cp ../LICENSE ./
-
-for f in Q3A QUAKE2; do
-  cp ../bin/release-$f/x86/rocketmod_qmm_$f.so ./
-  cp ../bin/release-$f/x86_64/rocketmod_qmm_x86_64_$f.so ./
-done
-
+cp ../bin/release-Q3A/x86/rocketmod_qmm_Q3A.so ./
+cp ../bin/release-Q3A/x86_64/rocketmod_qmm_x86_64_Q3A.so ./
+cp ../bin/release-QUAKE2/x86/rocketmod_qmm_QUAKE2.so ./
+cp ../bin/release-QUAKE2/x86_64/rocketmod_qmm_x86_64_QUAKE2.so ./
 cd ..
