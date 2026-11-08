@@ -9,6 +9,8 @@ Created By:
 
 */
 
+#pragma once
+
 #ifndef ROCKETMOD_QMM_UTIL_HPP
 #define ROCKETMOD_QMM_UTIL_HPP
 

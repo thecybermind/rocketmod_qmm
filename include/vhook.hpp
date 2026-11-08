@@ -1,3 +1,16 @@
+/*
+RocketMod - Rocket Launchers-Only Plugin
+Copyright 2004-2026
+https://github.com/thecybermind/rocketmod_qmm/
+3-clause BSD license: https://opensource.org/license/bsd-3-clause
+
+Created By:
+    Kevin Masterson < k.m.masterson@gmail.com >
+
+*/
+
+#pragma once
+
 #ifndef ROCKETMOD_QMM_VHOOK_HPP
 #define ROCKETMOD_QMM_VHOOK_HPP
 
